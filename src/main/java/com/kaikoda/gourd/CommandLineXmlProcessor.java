@@ -24,7 +24,7 @@ import java.io.InputStreamReader;
 
 public class CommandLineXmlProcessor {
 
-	private static String DEFAULT_PATH_TO_PROCESSOR = "/home/sheila/Software/Calabash/xmlcalabash-1.0.9-94/calabash.jar"; 
+	protected static final String DEFAULT_PATH_TO_PROCESSOR = "/home/sheila/Software/Calabash/xmlcalabash-1.0.9-94/calabash.jar"; 
 	
 	private String pathToXmlProcessor;
 	private Runtime runtime;
@@ -46,6 +46,21 @@ public class CommandLineXmlProcessor {
         this.response = null;
         this.exitValue = 0;
 		
+	}
+	
+	/**
+	 * Overrides the default path to the jar file of the XML processor that this utility is to use.
+	 * @param path the path to the XML processor (eg. Calabash). 
+	 */
+	public void setPathToXmlProcessor(String path) {
+		this.pathToXmlProcessor = path;
+	}
+	
+	/**
+	 * @return the path to the jar file of the XML processor currently being used by this utility.
+	 */
+	public String getPathToXmlProcessor() {
+		return this.pathToXmlProcessor;
 	}
 	
 	public Boolean isReady() {

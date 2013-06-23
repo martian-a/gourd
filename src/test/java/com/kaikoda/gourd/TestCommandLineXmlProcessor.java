@@ -1,6 +1,7 @@
 package com.kaikoda.gourd;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.junit.Assert.*;
 
 import java.io.File;
 
@@ -9,6 +10,7 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
 
 public class TestCommandLineXmlProcessor {
 
@@ -65,6 +67,28 @@ public class TestCommandLineXmlProcessor {
 		runtime.execute(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/option_required.xpl"));		
 		
 	}	
+	
+	/**
+	 * Check that it's possible to change the XML processor used by CommandLineXmlProcessor.
+	 * @throws Exception
+	 */
+	@Test
+	public void testSetPathToXmlProcessor() throws Exception {
+		
+		String expected = "/testing/testing/one/two/one/two";
+		
+		CommandLineXmlProcessor runtime = new CommandLineXmlProcessor();		
+		
+		// Check that the initial value is the default value.
+		assertEquals(CommandLineXmlProcessor.DEFAULT_PATH_TO_PROCESSOR, runtime.getPathToXmlProcessor());
+		
+		// Change the value of pathToXmlProcessor
+		runtime.setPathToXmlProcessor(expected);
+		
+		// Check that the active value has changed, as specified.
+		assertEquals(expected, runtime.getPathToXmlProcessor());
+		
+	}
 	
 	/**
 	 * Converts a relative path to a test file into an absolute path.
