@@ -38,14 +38,28 @@ public class CommandLineXmlProcessor {
 	}
 	
 	public CommandLineXmlProcessor(String processor) {
-		
-		this.pathToXmlProcessor = processor;
+		this.reset(processor);        		
+	}
+	
+	/**
+	 * A convenience method for overriding the default path to the XML processor during reset.
+	 * @param processor the path to the XML processor.
+	 */
+	public void reset(String processor) {
+		this.reset();
+		this.setPathToXmlProcessor(processor);
+	}
+	
+	/**
+	 * Reset all properties to their default initial values.
+	 */
+	public void reset() {
+		this.pathToXmlProcessor = CommandLineXmlProcessor.DEFAULT_PATH_TO_PROCESSOR;
         this.runtime = Runtime.getRuntime();
         this.ready = true;
         this.errorMessage = null;
         this.response = null;
-        this.exitValue = 0;
-		
+        this.exitValue = 0;		
 	}
 	
 	/**
