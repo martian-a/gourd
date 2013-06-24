@@ -6,6 +6,8 @@ import java.io.File;
 
 import org.apache.commons.io.FileUtils;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -14,6 +16,18 @@ import org.junit.Test;
  *
  */
 public class TestIdentity {
+	
+	static private CommandLineXmlProcessor processor;
+	
+	@BeforeClass
+	static public void setupOnce() {
+		processor = new CommandLineXmlProcessor();
+	}
+	
+	@Before
+	public void setup() {
+		processor.reset();
+	}
 	
 	/**
 	 * Output a verbatim copy of the primary input.
@@ -24,15 +38,13 @@ public class TestIdentity {
 		
 		String pathToPipeline = TestCommandLineXmlProcessor.getAbsolutePath("/xproc/identity/copy_verbatim.xpl", false);
 		String pathToSource = TestCommandLineXmlProcessor.getAbsolutePath("/data/source/hello_world.xml");
-		String expected = FileUtils.readFileToString(new File(pathToSource), "UTF-8");		
-		
-		CommandLineXmlProcessor runtime = new CommandLineXmlProcessor();
+		String expected = FileUtils.readFileToString(new File(pathToSource), "UTF-8");			
 				
-		runtime.execute("--input source=" + pathToSource + " " + pathToPipeline);			
+		processor.execute("--input source=" + pathToSource + " " + pathToPipeline);			
 		
 		XMLUnit.setIgnoreWhitespace(true);
 		
-		assertXMLEqual(expected, runtime.getResponse());
+		assertXMLEqual(expected, processor.getResponse());
 		
 	}
 	

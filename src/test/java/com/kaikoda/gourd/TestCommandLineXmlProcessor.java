@@ -4,6 +4,8 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -15,18 +17,22 @@ import org.junit.rules.ExpectedException;
 
 
 public class TestCommandLineXmlProcessor {
-
-	private Boolean defaultIsReady = true;
-	private String defaultErrorMessage = null;
-	private String defaultResponse = null;
-	private int defaultExitValue = 0;
-	private String defaultPathToXmlProcessor = CommandLineXmlProcessor.DEFAULT_PATH_TO_PROCESSOR;
 	
+	static private Boolean defaultIsReady = true;	
+	static private String defaultErrorMessage = null;	
+	static private String defaultResponse = null;
+	static private int defaultExitValue = 0;	
+	static private String defaultPathToXmlProcessor;	
 	static private CommandLineXmlProcessor processor;
 	
 	@BeforeClass
-	static public void setupOnce() {
+	static public void setupOnce() throws IOException {
+		
 		processor = new CommandLineXmlProcessor();
+		
+		Properties properties = CommandLineXmlProcessor.getDefaultProperties();
+		defaultPathToXmlProcessor = properties.getProperty("xmlprocessor.path");
+		
 	}
 	
 	@Before
@@ -36,6 +42,13 @@ public class TestCommandLineXmlProcessor {
 	
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
+	
+	@Test
+	public void testSettings() throws Exception {		
+		
+		assertEquals(this.defaultPathToXmlProcessor, processor.getPathToXmlProcessor());
+		
+	}
 	
 	/**
 	 * Check that the CommandLineXmlProcessor is capable of executing a valid XML pipeline.

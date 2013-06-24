@@ -6,6 +6,8 @@ import java.io.File;
 
 import org.apache.commons.io.FileUtils;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -15,6 +17,18 @@ import org.junit.Test;
  */
 public class TestWrap {
 	
+	static private CommandLineXmlProcessor processor;
+	
+	@BeforeClass
+	static public void setupOnce() {
+		processor = new CommandLineXmlProcessor();
+	}
+	
+	@Before
+	public void setup() {
+		processor.reset();
+	}
+	
 	/**
 	 * Output a result built using steps imported from a library.
 	 * @throws Exception
@@ -23,15 +37,13 @@ public class TestWrap {
 	public void testWrap_helloWorld() throws Exception {	
 		
 		String pathToPipeline = TestCommandLineXmlProcessor.getAbsolutePath("/xproc/wrap/hello_world.xpl", false);
-		String expected = FileUtils.readFileToString(new File(TestCommandLineXmlProcessor.getAbsolutePath("/data/source/hello_world.xml")), "UTF-8");		
-		
-		CommandLineXmlProcessor runtime = new CommandLineXmlProcessor();
+		String expected = FileUtils.readFileToString(new File(TestCommandLineXmlProcessor.getAbsolutePath("/data/source/hello_world.xml")), "UTF-8");			
 				
-		runtime.execute(pathToPipeline);			
+		processor.execute(pathToPipeline);			
 		
 		XMLUnit.setIgnoreWhitespace(true);
 		
-		assertXMLEqual(expected, runtime.getResponse());
+		assertXMLEqual(expected, processor.getResponse());
 		
 	}
 	

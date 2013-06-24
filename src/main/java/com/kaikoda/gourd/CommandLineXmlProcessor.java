@@ -18,14 +18,15 @@
 package com.kaikoda.gourd;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Properties;
 
-public class CommandLineXmlProcessor {
-
-	protected static final String DEFAULT_PATH_TO_PROCESSOR = "/home/sheila/Software/Calabash/xmlcalabash-1.0.9-94/calabash.jar"; 
+public class CommandLineXmlProcessor { 
 	
+	private Properties defaultProperties;
 	private String pathToXmlProcessor;
 	private Runtime runtime;
 	private Boolean ready;
@@ -34,7 +35,7 @@ public class CommandLineXmlProcessor {
 	private int exitValue;
 	
 	public CommandLineXmlProcessor() {
-		this(CommandLineXmlProcessor.DEFAULT_PATH_TO_PROCESSOR);
+		this(null);
 	}
 	
 	public CommandLineXmlProcessor(String processor) {
@@ -46,15 +47,38 @@ public class CommandLineXmlProcessor {
 	 * @param processor the path to the XML processor.
 	 */
 	public void reset(String processor) {
-		this.reset();
+		this.reset();		
 		this.setPathToXmlProcessor(processor);
 	}
 	
 	/**
 	 * Reset all properties to their default initial values.
+	 * @throws CommandLineXmlProcessorException 
 	 */
 	public void reset() {
-		this.pathToXmlProcessor = CommandLineXmlProcessor.DEFAULT_PATH_TO_PROCESSOR;
+		
+		// Load the default properties
+		if (this.defaultProperties == null) {
+			try {
+				this.defaultProperties = getDefaultProperties();
+			} catch (IOException e) {
+				this.defaultProperties = new Properties();
+			}
+		}								
+
+		try {
+			
+			// Read the default path to XML processor value
+			this.pathToXmlProcessor = this.defaultProperties.getProperty("xmlprocessor.path");
+			
+			if (this.pathToXmlProcessor == null) {
+				throw new CommandLineXmlProcessorException("Default path to XML Processor (xmlprocessor.path) must be set in .properties file.");
+			}
+			
+		} catch (CommandLineXmlProcessorException e) {
+			e.printStackTrace();
+		}
+				
         this.runtime = Runtime.getRuntime();
         this.ready = true;
         this.errorMessage = null;
@@ -152,4 +176,15 @@ public class CommandLineXmlProcessor {
     	return output;
     }
 	
+    static protected Properties getDefaultProperties() throws IOException {
+    	
+    	// create and load default properties
+    	Properties properties = new Properties();
+    	FileInputStream in = new FileInputStream(CommandLineXmlProcessor.class.getResource("/.properties").getFile());
+    	properties.load(in);
+    	in.close();    
+    	
+    	return properties;
+    	
+    }
 }
