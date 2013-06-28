@@ -18,11 +18,15 @@
 package com.kaikoda.gourd;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Properties;
+import java.util.Set;
 
 public class CommandLineXmlProcessor { 
 	
@@ -59,11 +63,7 @@ public class CommandLineXmlProcessor {
 		
 		// Load the default properties
 		if (this.defaultProperties == null) {
-			try {
-				this.defaultProperties = getDefaultProperties();
-			} catch (IOException e) {
-				this.defaultProperties = new Properties();
-			}
+			this.defaultProperties = getProperties();
 		}								
 
 		try {
@@ -176,15 +176,70 @@ public class CommandLineXmlProcessor {
     	return output;
     }
 	
-    static protected Properties getDefaultProperties() throws IOException {
+    static protected Properties getProperties() {    	    	
     	
-    	// create and load default properties
+    	
+    	String filename = ".properties";
+    	
+    	File user = new File(filename);
+    	
+    	File application = null;
+    	URL resource = CommandLineXmlProcessor.class.getResource("/" +filename);
+    	if (resource != null) {
+    		application = new File(resource.getFile());
+    	}
+    	        	
+    	try {    		
+    		return mergeProperties(application, user);
+    	} catch (IOException e) {
+    		try {
+    			return loadProperties(user);
+    		} catch (IOException f) {
+    			try {
+    				return loadProperties(application);
+    			} catch (IOException g) {
+    				return new Properties();
+    			}
+    		}
+    	}    	            	    	
+    	
+    }
+    
+    static private Properties mergeProperties(File application, File user) throws IOException {
+    	
+    	if (application == null || user == null) {
+    		throw new FileNotFoundException();
+    	}
+    	
+    	Properties merged = new Properties();
+    	merged = loadProperties(application);
+    	    
+    	Properties custom = new Properties();    	
+    	custom = loadProperties(user);
+    	
+    	Set<String> keys = custom.stringPropertyNames();
+    	for (String key : keys) {
+    		merged.setProperty(key, (String) custom.get(key));
+    	}
+    	
+    	return merged;
+    	
+    }
+    
+    static private Properties loadProperties(File file) throws IOException {
+    	
+    	if (file == null) {
+    		throw new FileNotFoundException();
+    	}
+    	
     	Properties properties = new Properties();
-    	FileInputStream in = new FileInputStream(CommandLineXmlProcessor.class.getResource("/.properties").getFile());
+    	
+    	FileInputStream in = new FileInputStream(file);
     	properties.load(in);
-    	in.close();    
+    	in.close();
     	
     	return properties;
     	
     }
+   
 }

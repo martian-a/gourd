@@ -30,7 +30,7 @@ public class TestCommandLineXmlProcessor {
 		
 		processor = new CommandLineXmlProcessor();
 		
-		Properties properties = CommandLineXmlProcessor.getDefaultProperties();
+		Properties properties = CommandLineXmlProcessor.getProperties();
 		TestCommandLineXmlProcessor.defaultPathToXmlProcessor = properties.getProperty("xmlprocessor.path");
 		
 	}
