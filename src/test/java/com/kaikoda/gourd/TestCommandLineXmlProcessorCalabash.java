@@ -27,6 +27,7 @@ public class TestCommandLineXmlProcessorCalabash {
 	private static File defaultSaxonConfiguration = null;
 	private static boolean defaultSchemaAware = false;
 	private static boolean defaultDebug = false;
+	private static boolean defaultSafeMode = false;
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -62,6 +63,7 @@ public class TestCommandLineXmlProcessorCalabash {
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSaxonConfiguration, TestCommandLineXmlProcessorCalabash.processor.getSaxonConfiguration());
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSchemaAware, TestCommandLineXmlProcessorCalabash.processor.getSchemaAware());
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultDebug, TestCommandLineXmlProcessorCalabash.processor.getDebug());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSafeMode, TestCommandLineXmlProcessorCalabash.processor.getSafeMode());
 
 	}
 
@@ -331,6 +333,22 @@ public class TestCommandLineXmlProcessorCalabash {
 		
 		// Check that the active value has changed, as specified.
 		Assert.assertEquals(expected, processor.getDebug());
+		
+	}
+	
+	/**
+	 * Check that it's possible to activate safe mode.
+	 */
+	@Test
+	public void TestCommandLineXmlProcessorCalabash_setSafeMode() {
+		
+		boolean expected = true;
+		
+		// Change the value of SafeMode
+		processor.setSafeMode(expected);
+		
+		// Check that the active value has changed, as specified.
+		Assert.assertEquals(expected, processor.getSafeMode());
 		
 	}
 	

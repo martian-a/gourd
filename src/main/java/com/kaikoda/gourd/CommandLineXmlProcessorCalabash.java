@@ -34,8 +34,13 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 		this.setSaxonConfiguration(null);
 		this.setSchemaAware(false);
 		this.setDebug(false);
+		this.setSafeMode(false);
 	}
 	
+	public void setSafeMode(boolean option) {
+		this.safeMode = option;		
+	}
+
 	public void setDebug(boolean option) {
 		this.debug = option;		
 	}
@@ -82,6 +87,10 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 
 	public boolean getDebug() {
 		return this.debug;
+	}
+
+	public boolean getSafeMode() {
+		return this.safeMode;
 	}
 
 }
