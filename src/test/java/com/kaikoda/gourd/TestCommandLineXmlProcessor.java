@@ -23,39 +23,8 @@ public class TestCommandLineXmlProcessor {
 	static private String defaultResponse = null;
 	static private CommandLineXmlProcessor processor;
 
-	/**
-	 * Converts a relative path to a test file into an absolute path.
-	 * 
-	 * @param relativePath
-	 *            the relative path to the test file.
-	 * @return the absolute path to the file.
-	 */
-	static protected String getAbsolutePath(String relativePath) {
-		return TestCommandLineXmlProcessor.getAbsolutePath(relativePath, true);
-	}
-
-	/**
-	 * Converts a relative path into an absolute path.
-	 * 
-	 * @param relativePath
-	 *            the relative path to a file in the project.
-	 * @param isTestFile
-	 *            whether the file is in the test or main part of the project.
-	 * @return the absolute path to the file.
-	 */
-	static protected String getAbsolutePath(String relativePath, Boolean isTestFile) {
-
-		@SuppressWarnings("rawtypes")
-		Class relativeTo = CommandLineXmlProcessor.class;
-		if (isTestFile) {
-			relativeTo = TestCommandLineXmlProcessor.class;
-		}
-
-		File file = new File(relativeTo.getResource(relativePath).getFile());
-
-		return file.getAbsolutePath();
-
-	}
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
 
 	@BeforeClass
 	static public void setupOnce() throws IOException {
@@ -66,10 +35,7 @@ public class TestCommandLineXmlProcessor {
 		TestCommandLineXmlProcessor.defaultPathToXmlProcessor = properties.getProperty("xmlprocessor.path");
 
 	}
-
-	@Rule
-	public ExpectedException exception = ExpectedException.none();
-
+	
 	@Before
 	public void setup() {
 		TestCommandLineXmlProcessor.processor.reset();
@@ -213,4 +179,39 @@ public class TestCommandLineXmlProcessor {
 		Assert.assertEquals(expected, TestCommandLineXmlProcessor.processor.getPathToXmlProcessor());
 
 	}
+
+	/**
+	 * Converts a relative path to a test file into an absolute path.
+	 * 
+	 * @param relativePath
+	 *            the relative path to the test file.
+	 * @return the absolute path to the file.
+	 */
+	static protected String getAbsolutePath(String relativePath) {
+		return TestCommandLineXmlProcessor.getAbsolutePath(relativePath, true);
+	}
+
+	/**
+	 * Converts a relative path into an absolute path.
+	 * 
+	 * @param relativePath
+	 *            the relative path to a file in the project.
+	 * @param isTestFile
+	 *            whether the file is in the test or main part of the project.
+	 * @return the absolute path to the file.
+	 */
+	static protected String getAbsolutePath(String relativePath, Boolean isTestFile) {
+
+		@SuppressWarnings("rawtypes")
+		Class relativeTo = CommandLineXmlProcessor.class;
+		if (isTestFile) {
+			relativeTo = TestCommandLineXmlProcessor.class;
+		}
+
+		File file = new File(relativeTo.getResource(relativePath).getFile());
+
+		return file.getAbsolutePath();
+
+	}
+
 }
