@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>gourd</groupId>
   <artifactId>gourd</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -20,6 +20,12 @@
           <exclude>settings/custom.properties</exclude>
           <exclude>settings/example.properties</exclude>
         </excludes>
+        <includes>
+          <include>**/*.xpl</include>
+          <include>**/*.xsl</include>
+          <include>**/*.xq</include>
+          <include>**/*.properties</include>
+        </includes>
       </resource>
     </resources>
     <testResources>
@@ -27,7 +33,11 @@
         <directory>src/test/resources</directory>  
         <excludes>
           <exclude>src/test/settings</exclude>
-        </excludes>       
+        </excludes>     
+        <includes>
+          <include>**/*.xpl</include>
+          <include>**/*.xml</include>
+        </includes>        
       </testResource>
       <testResource>
         <directory>src/test/resources/settings</directory>

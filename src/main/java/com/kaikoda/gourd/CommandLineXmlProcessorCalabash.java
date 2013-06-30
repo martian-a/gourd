@@ -1,14 +1,24 @@
 package com.kaikoda.gourd;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
 
 public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
+	
+	public static final String DEFAULT_INPUT_PORT = "source";
 	
 	private SaxonProcessor saxonProcessor;
 	private File saxonConfiguration;
 	private boolean schemaAware;
 	private boolean debug;
 	private boolean safeMode;
+	private URI input;
+	private String inputPort;
+	private URI pipeline;
+	
+	/*
 	private String config;
 	private String logStyle;
 	private String entityResolver;
@@ -16,12 +26,13 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 	private String extension;
 	private String binding;
 	private String withParam;
-	private String input;
 	private String dataInput;
 	private String output;
 	private String library;
 	private String step;
 	private String name;
+	*/
+	
 	
 	protected enum SaxonProcessor {
 		he, pe, ee
@@ -35,6 +46,40 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 		this.setSchemaAware(false);
 		this.setDebug(false);
 		this.setSafeMode(false);
+		this.setInput(null);
+		this.setInputPort(CommandLineXmlProcessorCalabash.DEFAULT_INPUT_PORT);
+		this.setPipeline(null);
+	}
+	
+	public URI getPipeline() {
+		return this.pipeline;
+	}
+	
+	public void setPipeline(URI location) {
+		this.pipeline = location;
+	}
+	
+	public URI getInput() {
+		return this.input;
+	}
+	
+	public String getInputPort() {
+		return this.inputPort;
+	}
+	
+	public void setInput(URI location) {
+		this.input = location;
+	}
+	
+	public void setInputPort(String portName) {
+		
+		// If the value is effectively empty, override it with the default port name.
+		if (portName == null || portName.trim().equals("")) {
+			portName = CommandLineXmlProcessorCalabash.DEFAULT_INPUT_PORT;
+		}
+		
+		this.inputPort = portName;
+			
 	}
 	
 	public void setSafeMode(boolean option) {
@@ -66,9 +111,9 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 		return this.saxonConfiguration;
 	}
 
-	public void setSaxonConfiguration(File file) {
+	public void setSaxonConfiguration(File location) {
 		
-		if ((file != null) && (this.getSaxonProcessor().equals(SaxonProcessor.he))) {
+		if ((location != null) && (this.getSaxonProcessor().equals(SaxonProcessor.he))) {
 			
 			// Ensure that no configuration file is set
 			this.saxonConfiguration = null;
@@ -78,7 +123,7 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 			
 		}
 		
-		this.saxonConfiguration = file;
+		this.saxonConfiguration = location;
 	}
 
 	public boolean getSchemaAware() {
@@ -91,6 +136,62 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 
 	public boolean getSafeMode() {
 		return this.safeMode;
+	}
+	
+	public void execute() throws CommandLineXmlProcessorException, IOException, InterruptedException {
+		super.execute(this);
+	}
+	
+	public String toString() {
+		
+		ArrayList<String> options = new ArrayList<String>();
+		
+		// Path to XML Calabash
+		options.add(this.getPathToXmlProcessor());
+		
+		// Which version of Saxon to use
+		options.add("--saxon-processor=" + this.getSaxonProcessor().name());
+		
+		// Path to Saxon configuration file
+		if (this.getSaxonConfiguration() != null) {
+			options.add("--saxon-configuration=" + this.getSaxonConfiguration().getPath());
+		}
+		
+		// Whether Saxon should be schema aware
+		options.add("--schema-aware=" + String.valueOf(this.getSchemaAware()));
+		
+		// Whether debug mode should be activated
+		options.add("--debug=" + String.valueOf(this.getDebug()));
+		
+		// Whether safe mode should be activated
+		options.add("--safe-mode=" + String.valueOf(this.safeMode));
+		
+		// The input 
+		if (this.input != null) {
+			options.add("--input " + this.inputPort + "=" + this.getInput().toString());
+		}
+		
+		// The pipeline
+		if (this.pipeline != null) {
+			options.add(this.getPipeline().toString());
+		}
+		
+		// Stick all the options together.
+		String command = "";
+		for (int i = 0; i < options.size(); i++) {
+			
+			// Append an option.
+			command = command + options.get(i);
+			
+			// If it's not the final option, append a space.
+			if (i != (options.size() - 1)) {
+				command = command + " ";
+			}
+			
+		}
+		
+		// Return the command that represents the current configuration of this object.
+		return command;
 	}
 
 }

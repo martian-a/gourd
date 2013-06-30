@@ -1,10 +1,11 @@
 package com.kaikoda.gourd;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
-
 import java.io.File;
+import java.net.URI;
+import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
+import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -12,40 +13,52 @@ import org.junit.Test;
 
 /**
  * Tests exploring the use of p:xslt.
+ * 
  * @author Sheila Thomson
- *
+ * 
  */
 public class TestXslt {
-	
-	static private CommandLineXmlProcessor processor;
-	
+
+	private static String defaultPathToXmlProcessor;
+	private static CommandLineXmlProcessorCalabash processor;
+
 	@BeforeClass
-	static public void setupOnce() {
-		processor = new CommandLineXmlProcessor();
+	public static void setupOnce() {
+
+		TestXslt.processor = new CommandLineXmlProcessorCalabash();
+
+		Properties properties = CommandLineXmlProcessor.getProperties();
+		TestXslt.defaultPathToXmlProcessor = properties.getProperty("xmlprocessor.path");
+
 	}
 	
 	@Before
 	public void setup() {
-		processor.reset();
+		TestXslt.processor.reset();
+		TestXslt.processor.setPathToXmlProcessor(TestXslt.defaultPathToXmlProcessor);
 	}
-	
+
 	/**
 	 * Output a verbatim copy of the primary input.
+	 * 
 	 * @throws Exception
 	 */
 	@Test
-	public void testXslt_copyVerbatim() throws Exception {	
-		
-		String pathToPipeline = TestCommandLineXmlProcessor.getAbsolutePath("/xproc/xslt/copy_verbatim.xpl", false);
-		String pathToSource = TestCommandLineXmlProcessor.getAbsolutePath("/data/source/hello_world.xml");
-		String expected = FileUtils.readFileToString(new File(pathToSource), "UTF-8");			
-				
-		processor.execute("--input source=" + pathToSource + " " + pathToPipeline);			
+	public void testXslt_copyVerbatim() throws Exception {
+
+		String pathToInput = TestCommandLineXmlProcessor.getAbsolutePath("/data/source/hello_world.xml");
+
+		TestXslt.processor.setPipeline(new URI(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/xslt/copy_verbatim.xpl", false)));
+		TestXslt.processor.setInput(new URI(pathToInput));
+
+		String expected = FileUtils.readFileToString(new File(pathToInput), "UTF-8");
+	
+		processor.execute();
 		
 		XMLUnit.setIgnoreWhitespace(true);
-		
-		assertXMLEqual(expected, processor.getResponse());
-		
+
+		XMLAssert.assertXMLEqual(expected, TestXslt.processor.getResponse());
+
 	}
-	
+
 }

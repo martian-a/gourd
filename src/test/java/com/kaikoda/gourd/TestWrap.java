@@ -3,6 +3,8 @@ package com.kaikoda.gourd;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 
 import java.io.File;
+import java.net.URI;
+import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -17,16 +19,22 @@ import org.junit.Test;
  */
 public class TestWrap {
 	
-	static private CommandLineXmlProcessor processor;
+	static private CommandLineXmlProcessorCalabash processor;
+	static private String defaultPathToXmlProcessor;
 	
 	@BeforeClass
 	static public void setupOnce() {
-		processor = new CommandLineXmlProcessor();
+		processor = new CommandLineXmlProcessorCalabash();
+		
+		Properties properties = CommandLineXmlProcessor.getProperties();
+		defaultPathToXmlProcessor = properties.getProperty("xmlprocessor.path");
+		
 	}
 	
 	@Before
 	public void setup() {
 		processor.reset();
+		processor.setPathToXmlProcessor(defaultPathToXmlProcessor);
 	}
 	
 	/**
@@ -36,10 +44,11 @@ public class TestWrap {
 	@Test
 	public void testWrap_helloWorld() throws Exception {	
 		
-		String pathToPipeline = TestCommandLineXmlProcessor.getAbsolutePath("/xproc/wrap/hello_world.xpl", false);
-		String expected = FileUtils.readFileToString(new File(TestCommandLineXmlProcessor.getAbsolutePath("/data/source/hello_world.xml")), "UTF-8");			
+		processor.setPipeline(new URI(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/wrap/hello_world.xpl", false)));
+		
+		String expected = FileUtils.readFileToString(new File(TestCommandLineXmlProcessor.getAbsolutePath("/data/source/hello_world.xml", true)), "UTF-8");			
 				
-		processor.execute(pathToPipeline);			
+		processor.execute();			
 		
 		XMLUnit.setIgnoreWhitespace(true);
 		

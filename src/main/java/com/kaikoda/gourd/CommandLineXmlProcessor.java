@@ -45,13 +45,13 @@ public class CommandLineXmlProcessor {
 		this.reset();
 	}
 
-	public void execute(String args) throws CommandLineXmlProcessorException, IOException, InterruptedException {
+	protected void execute(CommandLineXmlProcessor implementation) throws CommandLineXmlProcessorException, IOException, InterruptedException {
 
 		this.ready = false;
 		this.errorMessage = null;
 		this.response = null;
 
-		String command = "java -jar " + this.pathToXmlProcessor + " -P he " + args;
+		String command = "java -jar " + implementation.toString();
 
 		Process proc = this.runtime.exec(command);
 

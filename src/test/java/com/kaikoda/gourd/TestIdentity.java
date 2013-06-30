@@ -3,6 +3,8 @@ package com.kaikoda.gourd;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 
 import java.io.File;
+import java.net.URI;
+import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -17,16 +19,22 @@ import org.junit.Test;
  */
 public class TestIdentity {
 	
-	static private CommandLineXmlProcessor processor;
+	static private CommandLineXmlProcessorCalabash processor;
+	static private String defaultPathToXmlProcessor;
 	
 	@BeforeClass
 	static public void setupOnce() {
-		processor = new CommandLineXmlProcessor();
+		processor = new CommandLineXmlProcessorCalabash();
+		
+		Properties properties = CommandLineXmlProcessor.getProperties();
+		defaultPathToXmlProcessor = properties.getProperty("xmlprocessor.path");
+		
 	}
 	
 	@Before
 	public void setup() {
 		processor.reset();
+		processor.setPathToXmlProcessor(defaultPathToXmlProcessor);
 	}
 	
 	/**
@@ -36,11 +44,14 @@ public class TestIdentity {
 	@Test
 	public void testIdentity_copyVerbatim() throws Exception {	
 		
-		String pathToPipeline = TestCommandLineXmlProcessor.getAbsolutePath("/xproc/identity/copy_verbatim.xpl", false);
-		String pathToSource = TestCommandLineXmlProcessor.getAbsolutePath("/data/source/hello_world.xml");
-		String expected = FileUtils.readFileToString(new File(pathToSource), "UTF-8");			
+		String pathToInput = TestCommandLineXmlProcessor.getAbsolutePath("/data/source/hello_world.xml", true);
+		
+		processor.setPipeline(new URI(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/identity/copy_verbatim.xpl", false)));
+		processor.setInput(new URI(pathToInput));
+
+		String expected = FileUtils.readFileToString(new File(pathToInput), "UTF-8");			
 				
-		processor.execute("--input source=" + pathToSource + " " + pathToPipeline);			
+		processor.execute();			
 		
 		XMLUnit.setIgnoreWhitespace(true);
 		

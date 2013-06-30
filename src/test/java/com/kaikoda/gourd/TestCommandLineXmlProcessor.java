@@ -21,7 +21,7 @@ public class TestCommandLineXmlProcessor {
 	static private Boolean defaultIsReady = true;
 	static private String defaultPathToXmlProcessor;
 	static private String defaultResponse = null;
-	static private CommandLineXmlProcessor processor;
+	static private MockCommandLineXmlProcessorImpl processor;
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -29,7 +29,7 @@ public class TestCommandLineXmlProcessor {
 	@BeforeClass
 	static public void setupOnce() throws IOException {
 
-		TestCommandLineXmlProcessor.processor = new CommandLineXmlProcessor();
+		TestCommandLineXmlProcessor.processor = new MockCommandLineXmlProcessorImpl();
 
 		Properties properties = CommandLineXmlProcessor.getProperties();
 		TestCommandLineXmlProcessor.defaultPathToXmlProcessor = properties.getProperty("xmlprocessor.path");
@@ -39,6 +39,7 @@ public class TestCommandLineXmlProcessor {
 	@Before
 	public void setup() {
 		TestCommandLineXmlProcessor.processor.reset();
+		TestCommandLineXmlProcessor.processor.setPathToXmlProcessor(defaultPathToXmlProcessor);
 	}
 
 	@Test
@@ -64,10 +65,12 @@ public class TestCommandLineXmlProcessor {
 	@Test
 	public void testCommandLineXmlProcessor_execute_fail_noPipelineSpecified() throws Exception {
 
+		TestCommandLineXmlProcessor.processor.setCommand(""); 
+		
 		this.exception.expect(CommandLineXmlProcessorException.class);
 		this.exception.expectMessage("Usage: com.xmlcalabash.drivers.Main [switches] [pipeline.xpl] [options]");
 
-		TestCommandLineXmlProcessor.processor.execute("");
+		TestCommandLineXmlProcessor.processor.execute();
 
 	}
 
@@ -80,10 +83,12 @@ public class TestCommandLineXmlProcessor {
 	@Test
 	public void testCommandLineXmlProcessor_execute_fail_optionRequired_missing() throws Exception {
 
+		TestCommandLineXmlProcessor.processor.setCommand(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/option_required.xpl")); 
+		
 		this.exception.expect(CommandLineXmlProcessorException.class);
 		this.exception.expectMessage("err:XS0018:No value provided for required option");
 
-		TestCommandLineXmlProcessor.processor.execute(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/option_required.xpl"));
+		TestCommandLineXmlProcessor.processor.execute();
 
 	}
 
@@ -97,8 +102,10 @@ public class TestCommandLineXmlProcessor {
 	public void testCommandLineXmlProcessor_execute_success() throws Exception {
 
 		String expected = FileUtils.readFileToString(new File(TestCommandLineXmlProcessor.getAbsolutePath("/data/control/hello_world.xml")), "UTF-8");
+		
+		TestCommandLineXmlProcessor.processor.setCommand(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/hello_world.xpl")); 
 
-		TestCommandLineXmlProcessor.processor.execute(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/hello_world.xpl"));
+		TestCommandLineXmlProcessor.processor.execute();
 
 		XMLUnit.setIgnoreWhitespace(true);
 
@@ -214,4 +221,22 @@ public class TestCommandLineXmlProcessor {
 
 	}
 
+	static protected class MockCommandLineXmlProcessorImpl extends CommandLineXmlProcessor {
+		
+		private String command;
+		
+		public void setCommand(String commandIn) {
+			this.command = commandIn;
+		}
+		
+		public void execute() throws CommandLineXmlProcessorException, IOException, InterruptedException {
+			super.execute(this);
+		}
+		
+		public String toString() {
+			return this.getPathToXmlProcessor() + " -P he " + this.command;
+		}
+		
+	}
+	
 }

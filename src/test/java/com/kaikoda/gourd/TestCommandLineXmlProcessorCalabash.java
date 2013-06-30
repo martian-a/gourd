@@ -1,6 +1,8 @@
 package com.kaikoda.gourd;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -28,6 +30,9 @@ public class TestCommandLineXmlProcessorCalabash {
 	private static boolean defaultSchemaAware = false;
 	private static boolean defaultDebug = false;
 	private static boolean defaultSafeMode = false;
+	private static File defaultInput = null;
+	private static String defaultInputPort = CommandLineXmlProcessorCalabash.DEFAULT_INPUT_PORT;
+	private static File defaultPipeline = null;
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -45,6 +50,7 @@ public class TestCommandLineXmlProcessorCalabash {
 	@Before
 	public void setup() {
 		TestCommandLineXmlProcessorCalabash.processor.reset();
+		TestCommandLineXmlProcessorCalabash.processor.setPathToXmlProcessor(defaultPathToXmlProcessor);
 	}
 
 	@Test
@@ -64,6 +70,9 @@ public class TestCommandLineXmlProcessorCalabash {
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSchemaAware, TestCommandLineXmlProcessorCalabash.processor.getSchemaAware());
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultDebug, TestCommandLineXmlProcessorCalabash.processor.getDebug());
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSafeMode, TestCommandLineXmlProcessorCalabash.processor.getSafeMode());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultInput, TestCommandLineXmlProcessorCalabash.processor.getInput());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultInputPort, TestCommandLineXmlProcessorCalabash.processor.getInputPort());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultPipeline, TestCommandLineXmlProcessorCalabash.processor.getPipeline());
 
 	}
 
@@ -79,7 +88,7 @@ public class TestCommandLineXmlProcessorCalabash {
 		this.exception.expect(CommandLineXmlProcessorException.class);
 		this.exception.expectMessage("Usage: com.xmlcalabash.drivers.Main [switches] [pipeline.xpl] [options]");
 
-		TestCommandLineXmlProcessorCalabash.processor.execute("");
+		TestCommandLineXmlProcessorCalabash.processor.execute();
 
 	}
 
@@ -92,10 +101,12 @@ public class TestCommandLineXmlProcessorCalabash {
 	@Test
 	public void TestCommandLineXmlProcessorCalabash_execute_fail_optionRequired_missing() throws Exception {
 
+		processor.setPipeline(new URI(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/option_required.xpl")));
+		
 		this.exception.expect(CommandLineXmlProcessorException.class);
 		this.exception.expectMessage("err:XS0018:No value provided for required option");
 
-		TestCommandLineXmlProcessorCalabash.processor.execute(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/option_required.xpl"));
+		TestCommandLineXmlProcessorCalabash.processor.execute();
 
 	}
 
@@ -107,10 +118,12 @@ public class TestCommandLineXmlProcessorCalabash {
 	 */
 	@Test
 	public void TestCommandLineXmlProcessorCalabash_execute_success() throws Exception {
+		
+		processor.setPipeline(new URI(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/hello_world.xpl")));
 
 		String expected = FileUtils.readFileToString(new File(TestCommandLineXmlProcessor.getAbsolutePath("/data/control/hello_world.xml")), "UTF-8");
 
-		TestCommandLineXmlProcessorCalabash.processor.execute(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/hello_world.xpl"));
+		TestCommandLineXmlProcessorCalabash.processor.execute();
 
 		XMLUnit.setIgnoreWhitespace(true);
 
@@ -352,4 +365,74 @@ public class TestCommandLineXmlProcessorCalabash {
 		
 	}
 	
+	/**
+	 * Check that it's possible to set the location of the input.
+	 * @throws URISyntaxException 
+	 */
+	@Test
+	public void TestCommandLineXmlProcessorCalabash_setInput() throws URISyntaxException {
+		
+		URI expected = new URI("/data/source/hello_world.xml");
+		
+		// Attempt to set the location of the input file.
+		processor.setInput(expected);
+		
+		// Check that the active value has changed, as specified.
+		Assert.assertEquals(expected, processor.getInput());
+		
+	}
+	
+	/**
+	 * Check that it's possible to change the input port.
+	 */
+	@Test
+	public void TestCommandLineXmlProcessorCalabash_setInputPort() {
+		
+		String expected = "stylesheet";
+		
+		// Check that the test value isn't accidentally the same as the default value.
+		Assert.assertNotEquals(CommandLineXmlProcessorCalabash.DEFAULT_INPUT_PORT, expected);
+		
+		// Attempt to change the input port
+		processor.setInputPort(expected);
+		
+		// Check that the active value has changed, as specified.
+		Assert.assertEquals(expected, processor.getInputPort());
+		
+	}
+
+	
+	/**
+	 * Check that it's possible to set an input XML document.
+	 * @throws URISyntaxException 
+	 */
+	@Test
+	public void TestCommandLineXmlProcessorCalabash_setPipeline() throws URISyntaxException {
+		
+		URI expected = new URI("/xproc/identity/copy_verbatim.xpl");
+		
+		// Attempt to set the pipeline
+		processor.setPipeline(expected);
+		
+		// Check that the active value has changed, as specified.
+		Assert.assertEquals(expected, processor.getPipeline());
+		
+	}
+	
+	/**
+	 * Check that the command string is as expected.
+	 * @throws URISyntaxException 
+	 */
+	@Test
+	public void testCommandLineXmlProcessorCalabash_toString_inlineInput() throws URISyntaxException {			
+		
+		String pathToPipeline = "/xproc/identity/copy_verbatim.xpl";
+		
+		processor.setPipeline(new URI(pathToPipeline));
+											
+		String expected = defaultPathToXmlProcessor + " --saxon-processor=he --schema-aware=false --debug=false --safe-mode=false " + pathToPipeline;				
+		
+		Assert.assertEquals(expected, processor.toString());
+		
+	}
 }
