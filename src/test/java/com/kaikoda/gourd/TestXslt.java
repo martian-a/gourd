@@ -46,12 +46,12 @@ public class TestXslt {
 	@Test
 	public void testXslt_copyVerbatim() throws Exception {
 
-		String pathToInput = TestCommandLineXmlProcessor.getAbsolutePath("/data/source/hello_world.xml");
+		File inputFile = TestCommandLineXmlProcessor.getFile("/data/source/hello_world.xml");
 
-		TestXslt.processor.setPipeline(new URI(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/xslt/copy_verbatim.xpl", false)));
-		TestXslt.processor.setInput(new URI(pathToInput));
+		TestXslt.processor.setPipeline(new URI(TestCommandLineXmlProcessor.getFile("/xproc/xslt/copy_verbatim.xpl", false).toURI().toString()));
+		TestXslt.processor.setInput(new URI(inputFile.toURI().toString()));
 
-		String expected = FileUtils.readFileToString(new File(pathToInput), "UTF-8");
+		String expected = FileUtils.readFileToString(inputFile, "UTF-8");
 	
 		processor.execute();
 		

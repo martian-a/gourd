@@ -44,9 +44,9 @@ public class TestWrap {
 	@Test
 	public void testWrap_helloWorld() throws Exception {	
 		
-		processor.setPipeline(new URI(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/wrap/hello_world.xpl", false)));
+		processor.setPipeline(new URI(TestCommandLineXmlProcessor.getFile("/xproc/wrap/hello_world.xpl", false).toURI().toString()));
 		
-		String expected = FileUtils.readFileToString(new File(TestCommandLineXmlProcessor.getAbsolutePath("/data/source/hello_world.xml", true)), "UTF-8");			
+		String expected = FileUtils.readFileToString(new File(TestCommandLineXmlProcessor.getFile("/data/source/hello_world.xml", true).getAbsolutePath()), "UTF-8");			
 				
 		processor.execute();			
 		

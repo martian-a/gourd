@@ -101,7 +101,7 @@ public class TestCommandLineXmlProcessorCalabash {
 	@Test
 	public void TestCommandLineXmlProcessorCalabash_execute_fail_optionRequired_missing() throws Exception {
 
-		processor.setPipeline(new URI(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/option_required.xpl")));
+		processor.setPipeline(new URI(TestCommandLineXmlProcessor.getFile("/xproc/option_required.xpl").toURI().toString()));
 		
 		this.exception.expect(CommandLineXmlProcessorException.class);
 		this.exception.expectMessage("err:XS0018:No value provided for required option");
@@ -119,9 +119,9 @@ public class TestCommandLineXmlProcessorCalabash {
 	@Test
 	public void TestCommandLineXmlProcessorCalabash_execute_success() throws Exception {
 		
-		processor.setPipeline(new URI(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/hello_world.xpl")));
+		processor.setPipeline(new URI(TestCommandLineXmlProcessor.getFile("/xproc/hello_world.xpl").toURI().toString()));
 
-		String expected = FileUtils.readFileToString(new File(TestCommandLineXmlProcessor.getAbsolutePath("/data/control/hello_world.xml")), "UTF-8");
+		String expected = FileUtils.readFileToString(new File(TestCommandLineXmlProcessor.getFile("/data/control/hello_world.xml").getAbsolutePath()), "UTF-8");
 
 		TestCommandLineXmlProcessorCalabash.processor.execute();
 

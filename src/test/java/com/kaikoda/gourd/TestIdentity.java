@@ -44,12 +44,12 @@ public class TestIdentity {
 	@Test
 	public void testIdentity_copyVerbatim() throws Exception {	
 		
-		String pathToInput = TestCommandLineXmlProcessor.getAbsolutePath("/data/source/hello_world.xml", true);
+		File inputFile = TestCommandLineXmlProcessor.getFile("/data/source/hello_world.xml", true);
 		
-		processor.setPipeline(new URI(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/identity/copy_verbatim.xpl", false)));
-		processor.setInput(new URI(pathToInput));
+		processor.setPipeline(new URI(TestCommandLineXmlProcessor.getFile("/xproc/identity/copy_verbatim.xpl", false).toURI().toString()));
+		processor.setInput(new URI(inputFile.toURI().toString()));
 
-		String expected = FileUtils.readFileToString(new File(pathToInput), "UTF-8");			
+		String expected = FileUtils.readFileToString(inputFile, "UTF-8");			
 				
 		processor.execute();			
 		

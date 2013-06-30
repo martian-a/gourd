@@ -83,7 +83,7 @@ public class TestCommandLineXmlProcessor {
 	@Test
 	public void testCommandLineXmlProcessor_execute_fail_optionRequired_missing() throws Exception {
 
-		TestCommandLineXmlProcessor.processor.setCommand(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/option_required.xpl")); 
+		TestCommandLineXmlProcessor.processor.setCommand(TestCommandLineXmlProcessor.getFile("/xproc/option_required.xpl").toURI().toString()); 
 		
 		this.exception.expect(CommandLineXmlProcessorException.class);
 		this.exception.expectMessage("err:XS0018:No value provided for required option");
@@ -101,9 +101,9 @@ public class TestCommandLineXmlProcessor {
 	@Test
 	public void testCommandLineXmlProcessor_execute_success() throws Exception {
 
-		String expected = FileUtils.readFileToString(new File(TestCommandLineXmlProcessor.getAbsolutePath("/data/control/hello_world.xml")), "UTF-8");
+		String expected = FileUtils.readFileToString(new File(TestCommandLineXmlProcessor.getFile("/data/control/hello_world.xml").getAbsolutePath()), "UTF-8");
 		
-		TestCommandLineXmlProcessor.processor.setCommand(TestCommandLineXmlProcessor.getAbsolutePath("/xproc/hello_world.xpl")); 
+		TestCommandLineXmlProcessor.processor.setCommand(TestCommandLineXmlProcessor.getFile("/xproc/hello_world.xpl").toURI().toString()); 
 
 		TestCommandLineXmlProcessor.processor.execute();
 
@@ -187,19 +187,9 @@ public class TestCommandLineXmlProcessor {
 
 	}
 
+	
 	/**
-	 * Converts a relative path to a test file into an absolute path.
-	 * 
-	 * @param relativePath
-	 *            the relative path to the test file.
-	 * @return the absolute path to the file.
-	 */
-	static protected String getAbsolutePath(String relativePath) {
-		return TestCommandLineXmlProcessor.getAbsolutePath(relativePath, true);
-	}
-
-	/**
-	 * Converts a relative path into an absolute path.
+	 * Locates a test file within the project.
 	 * 
 	 * @param relativePath
 	 *            the relative path to a file in the project.
@@ -207,18 +197,29 @@ public class TestCommandLineXmlProcessor {
 	 *            whether the file is in the test or main part of the project.
 	 * @return the absolute path to the file.
 	 */
-	static protected String getAbsolutePath(String relativePath, Boolean isTestFile) {
-
+	static protected File getFile(String relativePath) {
+		return TestCommandLineXmlProcessor.getFile(relativePath, true);
+	}
+	
+	/**
+	 * Locates a file within the project.
+	 * 
+	 * @param relativePath
+	 *            the relative path to a file in the project.
+	 * @param isTestFile
+	 *            whether the file is in the test or main part of the project.
+	 * @return the absolute path to the file.
+	 */
+	static protected File getFile(String relativePath, Boolean isTestFile) {
+		
 		@SuppressWarnings("rawtypes")
 		Class relativeTo = CommandLineXmlProcessor.class;
 		if (isTestFile) {
 			relativeTo = TestCommandLineXmlProcessor.class;
 		}
 
-		File file = new File(relativeTo.getResource(relativePath).getFile());
-
-		return file.getAbsolutePath();
-
+		return new File(relativeTo.getResource(relativePath).getFile());
+		
 	}
 
 	static protected class MockCommandLineXmlProcessorImpl extends CommandLineXmlProcessor {
