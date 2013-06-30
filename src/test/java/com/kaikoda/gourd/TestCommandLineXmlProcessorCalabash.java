@@ -26,6 +26,7 @@ public class TestCommandLineXmlProcessorCalabash {
 	private static SaxonProcessor defaultSaxonProcessor = SaxonProcessor.he;
 	private static File defaultSaxonConfiguration = null;
 	private static boolean defaultSchemaAware = false;
+	private static boolean defaultDebug = false;
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -60,6 +61,7 @@ public class TestCommandLineXmlProcessorCalabash {
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSaxonProcessor, TestCommandLineXmlProcessorCalabash.processor.getSaxonProcessor());
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSaxonConfiguration, TestCommandLineXmlProcessorCalabash.processor.getSaxonConfiguration());
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSchemaAware, TestCommandLineXmlProcessorCalabash.processor.getSchemaAware());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultDebug, TestCommandLineXmlProcessorCalabash.processor.getDebug());
 
 	}
 
@@ -313,6 +315,22 @@ public class TestCommandLineXmlProcessorCalabash {
 		
 		// Attempt to set a Saxon configuration file.
 		processor.setSchemaAware(true);	
+		
+	}
+
+	/**
+	 * Check that it's possible to activate debug mode.
+	 */
+	@Test
+	public void TestCommandLineXmlProcessorCalabash_setDebug() {
+		
+		boolean expected = true;
+		
+		// Change the value of Debug
+		processor.setDebug(expected);
+		
+		// Check that the active value has changed, as specified.
+		Assert.assertEquals(expected, processor.getDebug());
 		
 	}
 	

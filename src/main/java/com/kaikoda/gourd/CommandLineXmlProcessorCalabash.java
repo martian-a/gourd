@@ -33,8 +33,13 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 		this.setSaxonProcessor(SaxonProcessor.he);
 		this.setSaxonConfiguration(null);
 		this.setSchemaAware(false);
+		this.setDebug(false);
 	}
 	
+	public void setDebug(boolean option) {
+		this.debug = option;		
+	}
+
 	public void setSchemaAware(boolean option) {
 		
 		if ((option == true) && !(this.getSaxonProcessor().equals(SaxonProcessor.ee))) {
@@ -73,6 +78,10 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 
 	public boolean getSchemaAware() {
 		return this.schemaAware;
+	}
+
+	public boolean getDebug() {
+		return this.debug;
 	}
 
 }
