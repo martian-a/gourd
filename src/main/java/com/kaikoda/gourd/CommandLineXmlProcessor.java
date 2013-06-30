@@ -28,211 +28,221 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.Set;
 
-public class CommandLineXmlProcessor { 
-	
+public class CommandLineXmlProcessor {
+
 	private Properties defaultProperties;
-	private String pathToXmlProcessor;
-	private Runtime runtime;
-	private Boolean ready;
+
 	private String errorMessage;
-	private String response;
+
 	private int exitValue;
-	
+
+	private String pathToXmlProcessor;
+	private Boolean ready;
+	private String response;
+	private Runtime runtime;
+
 	public CommandLineXmlProcessor() {
 		this.reset();
 	}
-	
-	/**
-	 * A convenience method for overriding the default path to the XML processor during reset.
-	 * @param processor the path to the XML processor.
-	 */
-	public void reset(String processor) {
-		this.reset();		
-		this.setPathToXmlProcessor(processor);
-	}
-	
-	/**
-	 * Reset all properties to their default initial values.
-	 * @throws CommandLineXmlProcessorException 
-	 */
-	public void reset() {
-		
-		// Load the default properties
-		if (this.defaultProperties == null) {
-			this.defaultProperties = getProperties();
-		}								
 
-		try {
-			
-			// Read the default path to XML processor value
-			this.pathToXmlProcessor = this.defaultProperties.getProperty("xmlprocessor.path");
-			
-			if (this.pathToXmlProcessor == null) {
-				throw new CommandLineXmlProcessorException("Default path to XML Processor (xmlprocessor.path) must be set in custom.properties file.");
-			}
-			
-		} catch (CommandLineXmlProcessorException e) {
-			e.printStackTrace();
+	public void execute(String args) throws CommandLineXmlProcessorException, IOException, InterruptedException {
+
+		this.ready = false;
+		this.errorMessage = null;
+		this.response = null;
+
+		String command = "java -jar " + this.pathToXmlProcessor + " -P he " + args;
+
+		Process proc = this.runtime.exec(command);
+
+		InputStream errorStream = proc.getErrorStream();
+		InputStreamReader errorStreamReader = new InputStreamReader(errorStream);
+		BufferedReader bufferedErrorStreamReader = new BufferedReader(errorStreamReader);
+
+		if (bufferedErrorStreamReader.ready()) {
+			this.errorMessage = this.readStream(bufferedErrorStreamReader);
 		}
-				
-        this.runtime = Runtime.getRuntime();
-        this.ready = true;
-        this.errorMessage = null;
-        this.response = null;
-        this.exitValue = 0;		
+
+		if ((this.errorMessage != null) && (this.errorMessage != "")) {
+			throw new CommandLineXmlProcessorException(this.errorMessage);
+		}
+
+		InputStream outputStream = proc.getInputStream();
+		InputStreamReader outputStreamReader = new InputStreamReader(outputStream);
+		BufferedReader bufferedOutputStreamReader = new BufferedReader(outputStreamReader);
+
+		this.response = this.readStream(bufferedOutputStreamReader);
+
+		if (bufferedErrorStreamReader.ready()) {
+			this.errorMessage = this.readStream(bufferedErrorStreamReader);
+		}
+
+		if ((this.errorMessage != null) && (this.errorMessage != "")) {
+			throw new CommandLineXmlProcessorException(this.errorMessage);
+		}
+
+		this.exitValue = proc.waitFor();
+		this.ready = true;
 	}
-	
-	/**
-	 * Overrides the default path to the jar file of the XML processor that this utility is to use.
-	 * @param path the path to the XML processor (eg. Calabash). 
-	 */
-	public void setPathToXmlProcessor(String path) {
-		this.pathToXmlProcessor = path;
+
+	public String getErrorMessage() {
+		return this.errorMessage;
 	}
-	
+
+	public int getExitValue() {
+		return this.exitValue;
+	}
+
 	/**
-	 * @return the path to the jar file of the XML processor currently being used by this utility.
+	 * @return the path to the jar file of the XML processor currently being
+	 *         used by this utility.
 	 */
 	public String getPathToXmlProcessor() {
 		return this.pathToXmlProcessor;
 	}
-	
-	public Boolean isReady() {
-		return this.ready;
-	}
-	
-	public String getErrorMessage() {
-		return this.errorMessage;
-	}
-	
+
 	public String getResponse() {
 		return this.response;
 	}
-	
-	public int getExitValue() {
-		return this.exitValue;
+
+	public Boolean isReady() {
+		return this.ready;
 	}
-	
-    public void execute(String args) throws CommandLineXmlProcessorException, IOException, InterruptedException {
-    	
-    	this.ready = false;
-    	this.errorMessage = null;
-    	this.response = null;
-    
-    	String command = "java -jar " + this.pathToXmlProcessor + " -P he " + args;    	    	
-        	           
-        Process proc = runtime.exec(command);
-        
-        InputStream errorStream = proc.getErrorStream();
-        InputStreamReader errorStreamReader = new InputStreamReader(errorStream);
-        BufferedReader bufferedErrorStreamReader = new BufferedReader(errorStreamReader);                                       
-        
-        
-        if (bufferedErrorStreamReader.ready()) {
-        	this.errorMessage = this.readStream(bufferedErrorStreamReader);	
-        }        
-                
-        if (this.errorMessage != null && this.errorMessage != "") {
-        	throw new CommandLineXmlProcessorException(this.errorMessage);
-        }        
-        
-        InputStream outputStream = proc.getInputStream();
-        InputStreamReader outputStreamReader = new InputStreamReader(outputStream);
-        BufferedReader bufferedOutputStreamReader = new BufferedReader(outputStreamReader);                  
-        
-        this.response = this.readStream(bufferedOutputStreamReader);        
-        
-        if (bufferedErrorStreamReader.ready()) {
-        	this.errorMessage = this.readStream(bufferedErrorStreamReader);	
-        }        
-                
-        if (this.errorMessage != null && this.errorMessage != "") {
-        	throw new CommandLineXmlProcessorException(this.errorMessage);
-        }   
-        
-        this.exitValue = proc.waitFor();                
-        this.ready = true;
-    }
-    
-    private String readStream(BufferedReader reader) {
-    	
-    	String output = "";
-    	String resultLine = null;
-    	
-        try {
-        	
+
+	private String readStream(BufferedReader reader) {
+
+		String output = "";
+		String resultLine = null;
+
+		try {
+
 			while ((resultLine = reader.readLine()) != null) {
 				output = output + resultLine + "\n";
 			}
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-    	
-    	return output;
-    }
-	
-    static protected Properties getProperties() {    	    	
-    	
-    	File user = new File("custom.properties");
-    	
-    	File application = null;
-    	URL resource = CommandLineXmlProcessor.class.getResource("/settings/default.properties");
-    	if (resource != null) {
-    		application = new File(resource.getFile());
-    	}
-    	        	
-    	try {    		
-    		return mergeProperties(application, user);
-    	} catch (IOException e) {
-    		try {
-    			return loadProperties(user);
-    		} catch (IOException f) {
-    			try {
-    				return loadProperties(application);
-    			} catch (IOException g) {
-    				return new Properties();
-    			}
-    		}
-    	}    	            	    	
-    	
-    }
-    
-    static private Properties mergeProperties(File application, File user) throws IOException {
-    	
-    	if (application == null || user == null) {
-    		throw new FileNotFoundException();
-    	}
-    	
-    	Properties merged = new Properties();
-    	merged = loadProperties(application);
-    	    
-    	Properties custom = new Properties();    	
-    	custom = loadProperties(user);
-    	
-    	Set<String> keys = custom.stringPropertyNames();
-    	for (String key : keys) {
-    		merged.setProperty(key, (String) custom.get(key));
-    	}
-    	
-    	return merged;
-    	
-    }
-    
-    static private Properties loadProperties(File file) throws IOException {
-    	
-    	if (file == null) {
-    		throw new FileNotFoundException();
-    	}
-    	
-    	Properties properties = new Properties();
-    	
-    	FileInputStream in = new FileInputStream(file);
-    	properties.load(in);
-    	in.close();
-    	
-    	return properties;
-    	
-    }
-   
+
+		return output;
+	}
+
+	/**
+	 * Reset all properties to their default initial values.
+	 * 
+	 * @throws CommandLineXmlProcessorException
+	 */
+	public void reset() {
+
+		// Load the default properties
+		if (this.defaultProperties == null) {
+			this.defaultProperties = CommandLineXmlProcessor.getProperties();
+		}
+
+		try {
+
+			// Read the default path to XML processor value
+			this.pathToXmlProcessor = this.defaultProperties.getProperty("xmlprocessor.path");
+
+			if (this.pathToXmlProcessor == null) {
+				throw new CommandLineXmlProcessorException("Default path to XML Processor (xmlprocessor.path) must be set in custom.properties file.");
+			}
+
+		} catch (CommandLineXmlProcessorException e) {
+			e.printStackTrace();
+		}
+
+		this.runtime = Runtime.getRuntime();
+		this.ready = true;
+		this.errorMessage = null;
+		this.response = null;
+		this.exitValue = 0;
+	}
+
+	/**
+	 * A convenience method for overriding the default path to the XML processor
+	 * during reset.
+	 * 
+	 * @param processor
+	 *            the path to the XML processor.
+	 */
+	public void reset(String processor) {
+		this.reset();
+		this.setPathToXmlProcessor(processor);
+	}
+
+	/**
+	 * Overrides the default path to the jar file of the XML processor that this
+	 * utility is to use.
+	 * 
+	 * @param path
+	 *            the path to the XML processor (eg. Calabash).
+	 */
+	public void setPathToXmlProcessor(String path) {
+		this.pathToXmlProcessor = path;
+	}
+
+	static protected Properties getProperties() {
+
+		File user = new File("custom.properties");
+
+		File application = null;
+		URL resource = CommandLineXmlProcessor.class.getResource("/settings/default.properties");
+		if (resource != null) {
+			application = new File(resource.getFile());
+		}
+
+		try {
+			return CommandLineXmlProcessor.mergeProperties(application, user);
+		} catch (IOException e) {
+			try {
+				return CommandLineXmlProcessor.loadProperties(user);
+			} catch (IOException f) {
+				try {
+					return CommandLineXmlProcessor.loadProperties(application);
+				} catch (IOException g) {
+					return new Properties();
+				}
+			}
+		}
+
+	}
+
+	static private Properties loadProperties(File file) throws IOException {
+
+		if (file == null) {
+			throw new FileNotFoundException();
+		}
+
+		Properties properties = new Properties();
+
+		FileInputStream in = new FileInputStream(file);
+		properties.load(in);
+		in.close();
+
+		return properties;
+
+	}
+
+	static private Properties mergeProperties(File application, File user) throws IOException {
+
+		if ((application == null) || (user == null)) {
+			throw new FileNotFoundException();
+		}
+
+		Properties merged = new Properties();
+		merged = CommandLineXmlProcessor.loadProperties(application);
+
+		Properties custom = new Properties();
+		custom = CommandLineXmlProcessor.loadProperties(user);
+
+		Set<String> keys = custom.stringPropertyNames();
+		for (String key : keys) {
+			merged.setProperty(key, (String) custom.get(key));
+		}
+
+		return merged;
+
+	}
+
 }
