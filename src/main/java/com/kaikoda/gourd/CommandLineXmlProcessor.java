@@ -39,11 +39,7 @@ public class CommandLineXmlProcessor {
 	private int exitValue;
 	
 	public CommandLineXmlProcessor() {
-		this(null);
-	}
-	
-	public CommandLineXmlProcessor(String processor) {
-		this.reset(processor);        		
+		this.reset();
 	}
 	
 	/**
@@ -72,7 +68,7 @@ public class CommandLineXmlProcessor {
 			this.pathToXmlProcessor = this.defaultProperties.getProperty("xmlprocessor.path");
 			
 			if (this.pathToXmlProcessor == null) {
-				throw new CommandLineXmlProcessorException("Default path to XML Processor (xmlprocessor.path) must be set in .properties file.");
+				throw new CommandLineXmlProcessorException("Default path to XML Processor (xmlprocessor.path) must be set in custom.properties file.");
 			}
 			
 		} catch (CommandLineXmlProcessorException e) {
@@ -178,13 +174,10 @@ public class CommandLineXmlProcessor {
 	
     static protected Properties getProperties() {    	    	
     	
-    	
-    	String filename = ".properties";
-    	
-    	File user = new File(filename);
+    	File user = new File("custom.properties");
     	
     	File application = null;
-    	URL resource = CommandLineXmlProcessor.class.getResource("/" +filename);
+    	URL resource = CommandLineXmlProcessor.class.getResource("/settings/default.properties");
     	if (resource != null) {
     		application = new File(resource.getFile());
     	}
