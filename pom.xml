@@ -1,42 +1,42 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project 
+  xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>gourd</groupId>
   <artifactId>gourd</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
   <build> 
     <sourceDirectory>src/main/java</sourceDirectory>
     <testSourceDirectory>src/test/java</testSourceDirectory>
     <resources>
       <resource>
-        <directory>src/main</directory>
+        <directory>src/main/resources</directory>   
         <excludes>
-          <exclude>java</exclude>
-        </excludes>        
-        <includes>
-          <include>**/*.xpl</include>
-          <include>**/*.xsl</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>src/main/settings</directory>
-        <includes>
-          <include>**/*.properties</include>
-        </includes>
+          <exclude>*/*.git*</exclude>
+          <exclude>settings/custom.properties</exclude>
+          <exclude>settings/example.properties</exclude>
+        </excludes>
       </resource>
     </resources>
     <testResources>
       <testResource>
-        <directory>src/test</directory>
+        <directory>src/test/resources</directory>  
         <excludes>
-          <exclude>java</exclude>
-        </excludes>
+          <exclude>src/test/settings</exclude>
+        </excludes>       
+      </testResource>
+      <testResource>
+        <directory>src/test/resources/settings</directory>
         <includes>
-          <include>**/*.xpl</include>
-          <include>**/*.xml</include>
-          <include>**/*.html</include>
+          <include>*.properties</include>
         </includes>
-      </testResource>        
-    </testResources>
+        <targetPath>${project.build.directory}</targetPath>
+      </testResource>
+    </testResources>    
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -46,7 +46,26 @@
           <target>1.7</target>
         </configuration>
       </plugin>
-    </plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <finalName>gourd</finalName>
+          <descriptors>
+            <descriptor>${basedir}/assembly.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>    
   </build>
   <dependencies>
   	<dependency>
