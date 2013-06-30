@@ -31,8 +31,19 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 		super.reset();
 		
 		this.setSaxonProcessor(SaxonProcessor.he);
+		this.setSaxonConfiguration(null);
+		this.setSchemaAware(false);
 	}
 	
+	public void setSchemaAware(boolean option) {
+		
+		if ((option == true) && !(this.getSaxonProcessor().equals(SaxonProcessor.ee))) {
+			throw new IllegalArgumentException("The Enterprise Edition of Saxon is required for schema awareness.");
+		}
+		
+		this.schemaAware = option;
+	}
+
 	public SaxonProcessor getSaxonProcessor() {
 		return this.saxonProcessor;
 	}
@@ -47,7 +58,7 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 
 	public void setSaxonConfiguration(File file) {
 		
-		if (this.getSaxonProcessor().equals(SaxonProcessor.he)) {
+		if ((file != null) && (this.getSaxonProcessor().equals(SaxonProcessor.he))) {
 			
 			// Ensure that no configuration file is set
 			this.saxonConfiguration = null;
@@ -58,6 +69,10 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 		}
 		
 		this.saxonConfiguration = file;
+	}
+
+	public boolean getSchemaAware() {
+		return this.schemaAware;
 	}
 
 }

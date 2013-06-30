@@ -25,6 +25,7 @@ public class TestCommandLineXmlProcessorCalabash {
 	private static CommandLineXmlProcessorCalabash processor;
 	private static SaxonProcessor defaultSaxonProcessor = SaxonProcessor.he;
 	private static File defaultSaxonConfiguration = null;
+	private static boolean defaultSchemaAware = false;
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -58,6 +59,7 @@ public class TestCommandLineXmlProcessorCalabash {
 		
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSaxonProcessor, TestCommandLineXmlProcessorCalabash.processor.getSaxonProcessor());
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSaxonConfiguration, TestCommandLineXmlProcessorCalabash.processor.getSaxonConfiguration());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSchemaAware, TestCommandLineXmlProcessorCalabash.processor.getSchemaAware());
 
 	}
 
@@ -261,11 +263,12 @@ public class TestCommandLineXmlProcessorCalabash {
 	 * Check that it's possible to change the Saxon configuration file.
 	 */
 	@Test
-	public void TestCommandLineXmlProcessorCalabash_setSaxonConfiguration_fail() {
+	public void TestCommandLineXmlProcessorCalabash_setSaxonConfiguration_fail() throws Exception {
 		
 		// Ensure that the Home Edition of Saxon is being used.
 		processor.setSaxonProcessor(SaxonProcessor.he);
 		
+		// Specify which exception is expected and all or part of the expected error message.
 		this.exception.expect(IllegalArgumentException.class);
 		this.exception.expectMessage("A Saxon configuration file may not be used with the Home Edition of Saxon.");
 		
@@ -275,4 +278,42 @@ public class TestCommandLineXmlProcessorCalabash {
 	}
 
 
+	/**
+	 * Check that it's possible to set Saxon to schema aware when the Enterprise Edition is in use.
+	 */
+	@Test
+	public void TestCommandLineXmlProcessorCalabash_setSchemaAware() {
+		
+		boolean expected = true;
+		
+		// Ensure that a valid edition of Saxon is being used.
+		processor.setSaxonProcessor(SaxonProcessor.ee);
+		
+		// Change the value of SaxonProcessor
+		processor.setSchemaAware(expected);
+		
+		// Check that the active value has changed, as specified.
+		Assert.assertEquals(expected, processor.getSchemaAware());
+		
+	}
+	
+	
+	/**
+	 * Check that it's not possible to set Saxon to schema aware when the Enterprise Edition isn't in use.
+	 */
+	@Test
+	public void TestCommandLineXmlProcessorCalabash_setSchemaAware_fail() throws Exception {
+		
+		// Ensure that the Home Edition of Saxon is being used.
+		processor.setSaxonProcessor(SaxonProcessor.he);
+		
+		// Specify which exception is expected and all or part of the expected error message.
+		this.exception.expect(IllegalArgumentException.class);
+		this.exception.expectMessage("The Enterprise Edition of Saxon is required for schema awareness.");
+		
+		// Attempt to set a Saxon configuration file.
+		processor.setSchemaAware(true);	
+		
+	}
+	
 }
