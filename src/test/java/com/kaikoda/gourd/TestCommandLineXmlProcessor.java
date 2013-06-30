@@ -44,9 +44,16 @@ public class TestCommandLineXmlProcessor {
 	public ExpectedException exception = ExpectedException.none();
 	
 	@Test
-	public void testSettings() throws Exception {		
+	public void testCommandLineXmlProcessor() throws Exception {
 		
+		/*
+		 *  Check that the initial values are the default values.
+		 */
 		assertEquals(TestCommandLineXmlProcessor.defaultPathToXmlProcessor, processor.getPathToXmlProcessor());
+		assertEquals(TestCommandLineXmlProcessor.defaultIsReady, processor.isReady());
+		assertEquals(TestCommandLineXmlProcessor.defaultErrorMessage, processor.getErrorMessage());
+		assertEquals(TestCommandLineXmlProcessor.defaultResponse, processor.getResponse());
+		assertEquals(TestCommandLineXmlProcessor.defaultExitValue, processor.getExitValue());		
 		
 	}
 	
@@ -55,7 +62,7 @@ public class TestCommandLineXmlProcessor {
 	 * @throws Exception
 	 */
 	@Test
-	public void testExecute_success() throws Exception {	
+	public void testCommandLineXmlProcessor_execute_success() throws Exception {	
 		
 		String expected = FileUtils.readFileToString(new File(TestCommandLineXmlProcessor.getAbsolutePath("/data/control/hello_world.xml")), "UTF-8");				
 				
@@ -72,7 +79,7 @@ public class TestCommandLineXmlProcessor {
 	 * @throws Exception
 	 */
 	@Test
-	public void testExecute_fail_noPipelineSpecified() throws Exception {					
+	public void testCommandLineXmlProcessor_execute_fail_noPipelineSpecified() throws Exception {					
 		
 		exception.expect(CommandLineXmlProcessorException.class);
 		exception.expectMessage("Usage: com.xmlcalabash.drivers.Main [switches] [pipeline.xpl] [options]");
@@ -86,7 +93,7 @@ public class TestCommandLineXmlProcessor {
 	 * @throws Exception
 	 */
 	@Test
-	public void testExecute_fail_optionRequired_missing() throws Exception {					
+	public void testCommandLineXmlProcessor_execute_fail_optionRequired_missing() throws Exception {					
 		
 		exception.expect(CommandLineXmlProcessorException.class);
 		exception.expectMessage("err:XS0018:No value provided for required option");
@@ -100,7 +107,7 @@ public class TestCommandLineXmlProcessor {
 	 * @throws Exception
 	 */
 	@Test
-	public void testSetPathToXmlProcessor() throws Exception {
+	public void testCommandLineXmlProcessor_setPathToXmlProcessor() throws Exception {
 		
 		String expected = "/testing/testing/one/two/one/two";	
 		
@@ -116,19 +123,10 @@ public class TestCommandLineXmlProcessor {
 	}
 	
 	@Test
-	public void testReset() throws Exception {
+	public void testCommandLineXmlProcessor_reset() throws Exception {
 		
 		String expected = "/testing/testing/one/two/one/two";
-		
-		/*
-		 *  Check that the initial values are the default values.
-		 */
-		assertEquals(TestCommandLineXmlProcessor.defaultPathToXmlProcessor, processor.getPathToXmlProcessor());
-		assertEquals(TestCommandLineXmlProcessor.defaultIsReady, processor.isReady());
-		assertEquals(TestCommandLineXmlProcessor.defaultErrorMessage, processor.getErrorMessage());
-		assertEquals(TestCommandLineXmlProcessor.defaultResponse, processor.getResponse());
-		assertEquals(TestCommandLineXmlProcessor.defaultExitValue, processor.getExitValue());
-		
+				
 		// Change the value of pathToXmlProcessor
 		processor.setPathToXmlProcessor(expected);
 		
@@ -139,7 +137,7 @@ public class TestCommandLineXmlProcessor {
 		processor.reset();
 		
 		/*
-		 *  Check that the initial values are once again the default values.
+		 *  Check that the new values are once again the default values.
 		 */
 		assertEquals(TestCommandLineXmlProcessor.defaultPathToXmlProcessor, processor.getPathToXmlProcessor());
 		assertEquals(TestCommandLineXmlProcessor.defaultIsReady, processor.isReady());
@@ -150,18 +148,9 @@ public class TestCommandLineXmlProcessor {
 	}
 	
 	@Test
-	public void testReset_overridePathToXmlProcessor() throws Exception {
+	public void testCommandLineXmlProcessor_reset_overridePathToXmlProcessor() throws Exception {
 		
 		String expected = "/testing/testing/one/two/one/two";
-		
-		/*
-		 *  Check that the initial values are the default values.
-		 */
-		assertEquals(TestCommandLineXmlProcessor.defaultPathToXmlProcessor, processor.getPathToXmlProcessor());
-		assertEquals(TestCommandLineXmlProcessor.defaultIsReady, processor.isReady());
-		assertEquals(TestCommandLineXmlProcessor.defaultErrorMessage, processor.getErrorMessage());
-		assertEquals(TestCommandLineXmlProcessor.defaultResponse, processor.getResponse());
-		assertEquals(TestCommandLineXmlProcessor.defaultExitValue, processor.getExitValue());
 		
 		// Change the value of pathToXmlProcessor
 		processor.setPathToXmlProcessor(expected);
@@ -173,7 +162,7 @@ public class TestCommandLineXmlProcessor {
 		processor.reset(expected);
 		
 		/*
-		 *  Check that the initial values are once again the default values, 
+		 *  Check that the new values are once again the default values, 
 		 *  except for the path to the XML Processor which should be the custom value supplied		 
 		 */
 		assertEquals(expected, processor.getPathToXmlProcessor());
