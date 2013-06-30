@@ -1,9 +1,11 @@
 package com.kaikoda.gourd;
 
+import java.io.File;
+
 public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 	
 	private SaxonProcessor saxonProcessor;
-	private String saxonConfiguration;
+	private File saxonConfiguration;
 	private boolean schemaAware;
 	private boolean debug;
 	private boolean safeMode;
@@ -35,8 +37,27 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 		return this.saxonProcessor;
 	}
 	
-	public void setSaxonProcessor(SaxonProcessor processor) {
-		this.saxonProcessor = processor;
+	public void setSaxonProcessor(SaxonProcessor option) {
+		this.saxonProcessor = option;
+	}
+
+	public File getSaxonConfiguration() {
+		return this.saxonConfiguration;
+	}
+
+	public void setSaxonConfiguration(File file) {
+		
+		if (this.getSaxonProcessor().equals(SaxonProcessor.he)) {
+			
+			// Ensure that no configuration file is set
+			this.saxonConfiguration = null;
+			
+			// Let the user know that this option isn't available in conjunction with the Home Edition of Saxon.
+			throw new IllegalArgumentException("A Saxon configuration file may not be used with the Home Edition of Saxon.");
+			
+		}
+		
+		this.saxonConfiguration = file;
 	}
 
 }

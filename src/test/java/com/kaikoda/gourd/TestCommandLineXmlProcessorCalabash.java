@@ -17,13 +17,14 @@ import com.kaikoda.gourd.CommandLineXmlProcessorCalabash.SaxonProcessor;
 
 public class TestCommandLineXmlProcessorCalabash {
 
-	static private String defaultErrorMessage = null;
-	static private int defaultExitValue = 0;
-	static private Boolean defaultIsReady = true;
-	static private String defaultPathToXmlProcessor;
-	static private String defaultResponse = null;
-	static private CommandLineXmlProcessorCalabash processor;
-	static private SaxonProcessor defaultSaxonProcessor = SaxonProcessor.he;
+	private static String defaultErrorMessage = null;
+	private static int defaultExitValue = 0;
+	private static Boolean defaultIsReady = true;
+	private static String defaultPathToXmlProcessor;
+	private static String defaultResponse = null;
+	private static CommandLineXmlProcessorCalabash processor;
+	private static SaxonProcessor defaultSaxonProcessor = SaxonProcessor.he;
+	private static File defaultSaxonConfiguration = null;
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -56,6 +57,7 @@ public class TestCommandLineXmlProcessorCalabash {
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultExitValue, TestCommandLineXmlProcessorCalabash.processor.getExitValue());
 		
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSaxonProcessor, TestCommandLineXmlProcessorCalabash.processor.getSaxonProcessor());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSaxonConfiguration, TestCommandLineXmlProcessorCalabash.processor.getSaxonConfiguration());
 
 	}
 
@@ -213,6 +215,62 @@ public class TestCommandLineXmlProcessorCalabash {
 		
 		// Check that the active value has changed, as specified.
 		Assert.assertEquals(expected, processor.getSaxonProcessor());
+		
+	}
+	
+	
+	/**
+	 * Check that it's possible to change the Saxon configuration file.
+	 */
+	@Test
+	public void TestCommandLineXmlProcessorCalabash_setSaxonConfiguration_professionalEdition() {
+		
+		File expected = new File("test");
+		
+		// Ensure that a valid edition of Saxon is being used.
+		processor.setSaxonProcessor(SaxonProcessor.pe);
+		
+		// Change the value of SaxonProcessor
+		processor.setSaxonConfiguration(expected);
+		
+		// Check that the active value has changed, as specified.
+		Assert.assertEquals(expected, processor.getSaxonConfiguration());
+		
+	}
+	
+	/**
+	 * Check that it's possible to change the Saxon configuration file.
+	 */
+	@Test
+	public void TestCommandLineXmlProcessorCalabash_setSaxonConfiguration_enterpriseEdition() {
+		
+		File expected = new File("test");
+		
+		// Ensure that a valid edition of Saxon is being used.
+		processor.setSaxonProcessor(SaxonProcessor.ee);
+		
+		// Change the value of SaxonProcessor
+		processor.setSaxonConfiguration(expected);
+		
+		// Check that the active value has changed, as specified.
+		Assert.assertEquals(expected, processor.getSaxonConfiguration());
+		
+	}
+	
+	/**
+	 * Check that it's possible to change the Saxon configuration file.
+	 */
+	@Test
+	public void TestCommandLineXmlProcessorCalabash_setSaxonConfiguration_fail() {
+		
+		// Ensure that the Home Edition of Saxon is being used.
+		processor.setSaxonProcessor(SaxonProcessor.he);
+		
+		this.exception.expect(IllegalArgumentException.class);
+		this.exception.expectMessage("A Saxon configuration file may not be used with the Home Edition of Saxon.");
+		
+		// Attempt to set a Saxon configuration file.
+		processor.setSaxonConfiguration(new File("test"));	
 		
 	}
 
