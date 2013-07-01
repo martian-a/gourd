@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 	
@@ -18,7 +19,8 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 	private URI input;
 	private String inputPort;
 	private URI pipeline;
-	private HashMap<String, String[]> withParam;
+	private TreeMap<String, String[]> withParam;
+	private TreeMap<String, String> options;
 	
 	/*
 	private String config;
@@ -31,7 +33,6 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 	private String output;
 	private String library;
 	private String step;
-	private String name;
 	*/
 	
 	
@@ -52,12 +53,21 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 		this.setInputPort(CommandLineXmlProcessorCalabash.DEFAULT_INPUT_PORT);
 		this.setPipeline(null);
 		this.setWithParam(null);
+		this.setOptions(null);
 		
 	}
 	
 	public void reset() {
 		super.reset();
 		this.init();
+	}
+	
+	public TreeMap<String, String> getOptions() {
+		return this.options;
+	}
+	
+	public void setOptions(TreeMap<String, String> list) {
+		this.options = list;
 	}
 	
 	public URI getPipeline() {
@@ -147,11 +157,11 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 		return this.safeMode;
 	}
 	
-	public HashMap<String,String[]> getWithParam(){
+	public TreeMap<String,String[]> getWithParam(){
 		return this.withParam;
 	}
 	
-	public void setWithParam(HashMap<String, String[]> parameters) {
+	public void setWithParam(TreeMap<String, String[]> parameters) {
 		this.withParam = parameters;
 	}
 	
@@ -188,12 +198,7 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 			options.add("--input " + this.inputPort + "=" + this.getInput().toString());
 		}
 		
-		// The pipeline
-		if (this.pipeline != null) {
-			options.add(this.getPipeline().toString());
-		}
-		
-		// Parameters to be passed through to the pipeline.
+		// Parameters (NOT options...)
 		if (this.withParam != null) {
 
 			String parameters = "";			
@@ -208,6 +213,26 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 			}
 			
 		}
+		
+		// The pipeline
+		if (this.pipeline != null) {
+			options.add(this.getPipeline().toString());
+		}
+		
+		// Options (NOT parameters...)		
+		if (this.options != null) {
+
+			String list = "";			
+			for (String name : this.options.keySet()) {				
+				String value = this.options.get(name);
+				list = list + name + "=" + value + " ";
+			}
+			if (list.trim() != "") {
+				options.add(list.trim());
+			}
+			
+		}
+		
 		
 		// Stick all the options together.
 		String command = "";

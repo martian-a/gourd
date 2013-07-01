@@ -3,8 +3,8 @@ package com.kaikoda.gourd;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.Properties;
+import java.util.TreeMap;
 
 import org.apache.commons.io.FileUtils;
 import org.custommonkey.xmlunit.XMLAssert;
@@ -34,7 +34,7 @@ public class TestCommandLineXmlProcessorCalabash {
 	private static File defaultInput = null;
 	private static String defaultInputPort = CommandLineXmlProcessorCalabash.DEFAULT_INPUT_PORT;
 	private static File defaultPipeline = null;
-	private static HashMap<String, String[]> defaultWithParam = null;
+	private static TreeMap<String, String[]> defaultWithParam = null;
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -430,20 +430,21 @@ public class TestCommandLineXmlProcessorCalabash {
 		
 		String pathToPipeline = "/xproc/identity/copy_verbatim.xpl";
 		
-		HashMap<String, String[]> params = new HashMap<String, String[]>();
-		String port1 = "source"; 
-		String port1param1 = "uri=http://localhost:8080/exist/apps/sapling-test/queries/person.xq?id=PER78";
-		String port1param2 = "root-publication-directory=/test/ing";
-		String port2 = "secondary"; 		
-		String port2param1 = "root-publication-directory=/test/ing/again";
+		TreeMap<String, String[]> params = new TreeMap<String, String[]>();
+		String port1 = "secondary"; 		
+		String port1param1 = "root-publication-directory=/test/ing/again";
+		String port2 = "source"; 
+		String port2param1 = "root-publication-directory=/test/ing";
+		String port2param2 = "uri=http://localhost:8080/exist/apps/sapling-test/queries/person.xq?id=PER78";
 		
-		params.put(port1, new String[]{port1param1, port1param2});
-		params.put(port2, new String[]{port2param1});
+		
+		params.put(port1, new String[]{port1param1});
+		params.put(port2, new String[]{port2param1, port2param2});
 				
 		processor.setPipeline(new URI(pathToPipeline));											
 		processor.setWithParam(params);
 		
-		String expected = defaultPathToXmlProcessor + " --saxon-processor=he --schema-aware=false --debug=false --safe-mode=false " + pathToPipeline + " " + port1 + "@" + port1param1 + " " + port1 + "@" + port1param2 + " " + port2 + "@" + port2param1;				
+		String expected = defaultPathToXmlProcessor + " --saxon-processor=he --schema-aware=false --debug=false --safe-mode=false " + port1 + "@" + port1param1 + " " + port2 + "@" + port2param1 + " " + port2 + "@" + port2param2 + " " + pathToPipeline;				
 		
 		Assert.assertEquals(expected, processor.toString());
 		
@@ -452,7 +453,7 @@ public class TestCommandLineXmlProcessorCalabash {
 	@Test
 	public void testCommandLineXmlProcessorCalabash_setWithParam() {
 		
-		HashMap<String, String[]> expected = new HashMap<String, String[]>();
+		TreeMap<String, String[]> expected = new TreeMap<String, String[]>();
 		
 		expected.put("source", new String[]{"uri=http://localhost:8080/exist/apps/sapling-test/queries/person.xq?id=PER78", "root-publication-directory=/test/ing"});
 		
@@ -461,4 +462,45 @@ public class TestCommandLineXmlProcessorCalabash {
 		Assert.assertEquals(expected, processor.getWithParam());
 		
 	}
+	
+	@Test
+	public void testCommandLineXmlProcessorCalabash_setOptions() {
+		
+		TreeMap<String, String> expected = new TreeMap<String, String>();
+		
+		expected.put("uri", "http://localhost:8080/exist/apps/sapling-test/queries/person.xq?id=PER78");
+		expected.put("root-publication-directory", "=/test/ing");
+		
+		processor.setOptions(expected);
+		
+		Assert.assertEquals(expected, processor.getOptions());
+		
+	}
+	
+	/**
+	 * Check that the command string is as expected.
+	 * @throws URISyntaxException 
+	 */
+	@Test
+	public void testCommandLineXmlProcessorCalabash_toString_options() throws URISyntaxException {			
+		
+		String pathToPipeline = "/xproc/identity/copy_verbatim.xpl";
+		
+		TreeMap<String, String> options = new TreeMap<String, String>();
+		String optionName1 = "root-publication-directory";
+		String optionValue1 = "/test/ing";
+		options.put(optionName1, optionValue1);
+		String optionName2 = "uri";
+		String optionValue2 = "http://localhost:8080/exist/apps/sapling-test/queries/person.xq?id=PER78";
+		options.put(optionName2, optionValue2);		
+						
+		processor.setPipeline(new URI(pathToPipeline));											
+		processor.setOptions(options);
+		
+		String expected = defaultPathToXmlProcessor + " --saxon-processor=he --schema-aware=false --debug=false --safe-mode=false " + pathToPipeline + " " + optionName1 + "=" + optionValue1 + " " + optionName2 + "=" + optionValue2;				
+		
+		Assert.assertEquals(expected, processor.toString());
+		
+	}	
+	
 }
