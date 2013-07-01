@@ -39,7 +39,6 @@ public class TestCommandLineXmlProcessor {
 	@Before
 	public void setup() {
 		TestCommandLineXmlProcessor.processor.reset();
-		TestCommandLineXmlProcessor.processor.setPathToXmlProcessor(defaultPathToXmlProcessor);
 	}
 
 	@Test
@@ -130,40 +129,19 @@ public class TestCommandLineXmlProcessor {
 		/*
 		 * Check that the new values are once again the default values.
 		 */
-		Assert.assertEquals(TestCommandLineXmlProcessor.defaultPathToXmlProcessor, TestCommandLineXmlProcessor.processor.getPathToXmlProcessor());
+		Assert.assertEquals(TestCommandLineXmlProcessor.defaultPathToXmlProcessor, TestCommandLineXmlProcessor.processor.getPathToXmlProcessor());	
 		Assert.assertEquals(TestCommandLineXmlProcessor.defaultIsReady, TestCommandLineXmlProcessor.processor.isReady());
 		Assert.assertEquals(TestCommandLineXmlProcessor.defaultErrorMessage, TestCommandLineXmlProcessor.processor.getErrorMessage());
 		Assert.assertEquals(TestCommandLineXmlProcessor.defaultResponse, TestCommandLineXmlProcessor.processor.getResponse());
 		Assert.assertEquals(TestCommandLineXmlProcessor.defaultExitValue, TestCommandLineXmlProcessor.processor.getExitValue());
-
-	}
-
-	@Test
-	public void testCommandLineXmlProcessor_reset_overridePathToXmlProcessor() throws Exception {
-
-		String expected = "/testing/testing/one/two/one/two";
-
-		// Change the value of pathToXmlProcessor
-		TestCommandLineXmlProcessor.processor.setPathToXmlProcessor(expected);
-
-		// Check that the active value has changed, as specified.
-		Assert.assertEquals(expected, TestCommandLineXmlProcessor.processor.getPathToXmlProcessor());
-
-		// Reset CommandLineXmlProcessor
-		TestCommandLineXmlProcessor.processor.reset(expected);
-
-		/*
-		 * Check that the new values are once again the default values, except
-		 * for the path to the XML Processor which should be the custom value
-		 * supplied
+		
+		/**
+		 * Check that the path to the XML Processor isn't null.
 		 */
-		Assert.assertEquals(expected, TestCommandLineXmlProcessor.processor.getPathToXmlProcessor());
-		Assert.assertEquals(TestCommandLineXmlProcessor.defaultIsReady, TestCommandLineXmlProcessor.processor.isReady());
-		Assert.assertEquals(TestCommandLineXmlProcessor.defaultErrorMessage, TestCommandLineXmlProcessor.processor.getErrorMessage());
-		Assert.assertEquals(TestCommandLineXmlProcessor.defaultResponse, TestCommandLineXmlProcessor.processor.getResponse());
-		Assert.assertEquals(TestCommandLineXmlProcessor.defaultExitValue, TestCommandLineXmlProcessor.processor.getExitValue());
+		Assert.assertTrue(processor.getPathToXmlProcessor() != null);
 
 	}
+
 
 	/**
 	 * Check that it's possible to change the XML processor used by

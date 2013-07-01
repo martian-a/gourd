@@ -3,6 +3,7 @@ package com.kaikoda.gourd;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -33,6 +34,7 @@ public class TestCommandLineXmlProcessorCalabash {
 	private static File defaultInput = null;
 	private static String defaultInputPort = CommandLineXmlProcessorCalabash.DEFAULT_INPUT_PORT;
 	private static File defaultPipeline = null;
+	private static HashMap<String, String[]> defaultWithParam = null;
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -50,7 +52,6 @@ public class TestCommandLineXmlProcessorCalabash {
 	@Before
 	public void setup() {
 		TestCommandLineXmlProcessorCalabash.processor.reset();
-		TestCommandLineXmlProcessorCalabash.processor.setPathToXmlProcessor(defaultPathToXmlProcessor);
 	}
 
 	@Test
@@ -73,6 +74,7 @@ public class TestCommandLineXmlProcessorCalabash {
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultInput, TestCommandLineXmlProcessorCalabash.processor.getInput());
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultInputPort, TestCommandLineXmlProcessorCalabash.processor.getInputPort());
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultPipeline, TestCommandLineXmlProcessorCalabash.processor.getPipeline());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultWithParam, TestCommandLineXmlProcessorCalabash.processor.getWithParam());
 
 	}
 
@@ -153,35 +155,18 @@ public class TestCommandLineXmlProcessorCalabash {
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultErrorMessage, TestCommandLineXmlProcessorCalabash.processor.getErrorMessage());
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultResponse, TestCommandLineXmlProcessorCalabash.processor.getResponse());
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultExitValue, TestCommandLineXmlProcessorCalabash.processor.getExitValue());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSaxonProcessor, TestCommandLineXmlProcessorCalabash.processor.getSaxonProcessor());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSaxonConfiguration, TestCommandLineXmlProcessorCalabash.processor.getSaxonConfiguration());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSchemaAware, TestCommandLineXmlProcessorCalabash.processor.getSchemaAware());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultDebug, TestCommandLineXmlProcessorCalabash.processor.getDebug());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSafeMode, TestCommandLineXmlProcessorCalabash.processor.getSafeMode());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultInput, TestCommandLineXmlProcessorCalabash.processor.getInput());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultInputPort, TestCommandLineXmlProcessorCalabash.processor.getInputPort());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultPipeline, TestCommandLineXmlProcessorCalabash.processor.getPipeline());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultWithParam, TestCommandLineXmlProcessorCalabash.processor.getWithParam());
 
 	}
 
-	@Test
-	public void TestCommandLineXmlProcessorCalabash_reset_overridePathToXmlProcessor() throws Exception {
-
-		String expected = "/testing/testing/one/two/one/two";
-
-		// Change the value of pathToXmlProcessor
-		TestCommandLineXmlProcessorCalabash.processor.setPathToXmlProcessor(expected);
-
-		// Check that the active value has changed, as specified.
-		Assert.assertEquals(expected, TestCommandLineXmlProcessorCalabash.processor.getPathToXmlProcessor());
-
-		// Reset CommandLineXmlProcessor
-		TestCommandLineXmlProcessorCalabash.processor.reset(expected);
-
-		/*
-		 * Check that the new values are once again the default values, except
-		 * for the path to the XML Processor which should be the custom value
-		 * supplied
-		 */
-		Assert.assertEquals(expected, TestCommandLineXmlProcessorCalabash.processor.getPathToXmlProcessor());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultIsReady, TestCommandLineXmlProcessorCalabash.processor.isReady());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultErrorMessage, TestCommandLineXmlProcessorCalabash.processor.getErrorMessage());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultResponse, TestCommandLineXmlProcessorCalabash.processor.getResponse());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultExitValue, TestCommandLineXmlProcessorCalabash.processor.getExitValue());
-
-	}
 
 	/**
 	 * Check that it's possible to change the XML processor used by
@@ -433,6 +418,47 @@ public class TestCommandLineXmlProcessorCalabash {
 		String expected = defaultPathToXmlProcessor + " --saxon-processor=he --schema-aware=false --debug=false --safe-mode=false " + pathToPipeline;				
 		
 		Assert.assertEquals(expected, processor.toString());
+		
+	}
+	
+	/**
+	 * Check that the command string is as expected.
+	 * @throws URISyntaxException 
+	 */
+	@Test
+	public void testCommandLineXmlProcessorCalabash_toString_withParam() throws URISyntaxException {			
+		
+		String pathToPipeline = "/xproc/identity/copy_verbatim.xpl";
+		
+		HashMap<String, String[]> params = new HashMap<String, String[]>();
+		String port1 = "source"; 
+		String port1param1 = "uri=http://localhost:8080/exist/apps/sapling-test/queries/person.xq?id=PER78";
+		String port1param2 = "root-publication-directory=/test/ing";
+		String port2 = "secondary"; 		
+		String port2param1 = "root-publication-directory=/test/ing/again";
+		
+		params.put(port1, new String[]{port1param1, port1param2});
+		params.put(port2, new String[]{port2param1});
+				
+		processor.setPipeline(new URI(pathToPipeline));											
+		processor.setWithParam(params);
+		
+		String expected = defaultPathToXmlProcessor + " --saxon-processor=he --schema-aware=false --debug=false --safe-mode=false " + pathToPipeline + " " + port1 + "@" + port1param1 + " " + port1 + "@" + port1param2 + " " + port2 + "@" + port2param1;				
+		
+		Assert.assertEquals(expected, processor.toString());
+		
+	}	
+	
+	@Test
+	public void testCommandLineXmlProcessorCalabash_setWithParam() {
+		
+		HashMap<String, String[]> expected = new HashMap<String, String[]>();
+		
+		expected.put("source", new String[]{"uri=http://localhost:8080/exist/apps/sapling-test/queries/person.xq?id=PER78", "root-publication-directory=/test/ing"});
+		
+		processor.setWithParam(expected);
+		
+		Assert.assertEquals(expected, processor.getWithParam());
 		
 	}
 }

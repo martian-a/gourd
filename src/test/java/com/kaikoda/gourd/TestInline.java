@@ -4,7 +4,6 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 
 import java.io.File;
 import java.net.URI;
-import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -19,22 +18,16 @@ import org.junit.Test;
  */
 public class TestInline {
 	
-	static private CommandLineXmlProcessorCalabash processor;
-	static private String defaultPathToXmlProcessor;
-	
+	private static CommandLineXmlProcessorCalabash processor;
+
 	@BeforeClass
-	static public void setupOnce() {
-		processor = new CommandLineXmlProcessorCalabash();
-		
-		Properties properties = CommandLineXmlProcessor.getProperties();
-		defaultPathToXmlProcessor = properties.getProperty("xmlprocessor.path");
-		
+	public static void setupOnce() {
+		TestInline.processor = new CommandLineXmlProcessorCalabash();
 	}
 	
 	@Before
 	public void setup() {
-		processor.reset();
-		processor.setPathToXmlProcessor(defaultPathToXmlProcessor);
+		TestInline.processor.reset();
 	}
 	
 	/**

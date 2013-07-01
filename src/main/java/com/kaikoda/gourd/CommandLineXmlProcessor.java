@@ -42,7 +42,7 @@ public class CommandLineXmlProcessor {
 	private Runtime runtime;
 
 	public CommandLineXmlProcessor() {
-		this.reset();
+		this.init();
 	}
 
 	protected void execute(CommandLineXmlProcessor implementation) throws CommandLineXmlProcessorException, IOException, InterruptedException {
@@ -126,14 +126,9 @@ public class CommandLineXmlProcessor {
 
 		return output;
 	}
-
-	/**
-	 * Reset all properties to their default initial values.
-	 * 
-	 * @throws CommandLineXmlProcessorException
-	 */
-	public void reset() {
-
+	
+	protected void init() {
+		
 		// Load the default properties
 		if (this.defaultProperties == null) {
 			this.defaultProperties = CommandLineXmlProcessor.getProperties();
@@ -157,19 +152,18 @@ public class CommandLineXmlProcessor {
 		this.errorMessage = null;
 		this.response = null;
 		this.exitValue = 0;
+		
 	}
 
 	/**
-	 * A convenience method for overriding the default path to the XML processor
-	 * during reset.
+	 * Reset all properties to their default initial values.
 	 * 
-	 * @param processor
-	 *            the path to the XML processor.
+	 * @throws CommandLineXmlProcessorException
 	 */
-	public void reset(String processor) {
-		this.reset();
-		this.setPathToXmlProcessor(processor);
+	public void reset() {
+		this.init();
 	}
+
 
 	/**
 	 * Overrides the default path to the jar file of the XML processor that this

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 	
@@ -17,6 +18,7 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 	private URI input;
 	private String inputPort;
 	private URI pipeline;
+	private HashMap<String, String[]> withParam;
 	
 	/*
 	private String config;
@@ -25,7 +27,6 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 	private String uriResolver;
 	private String extension;
 	private String binding;
-	private String withParam;
 	private String dataInput;
 	private String output;
 	private String library;
@@ -38,8 +39,9 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 		he, pe, ee
 	}
 	
-	public void reset() {
-		super.reset();
+	protected void init() {
+		
+		super.init();
 		
 		this.setSaxonProcessor(SaxonProcessor.he);
 		this.setSaxonConfiguration(null);
@@ -49,6 +51,13 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 		this.setInput(null);
 		this.setInputPort(CommandLineXmlProcessorCalabash.DEFAULT_INPUT_PORT);
 		this.setPipeline(null);
+		this.setWithParam(null);
+		
+	}
+	
+	public void reset() {
+		super.reset();
+		this.init();
 	}
 	
 	public URI getPipeline() {
@@ -138,6 +147,14 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 		return this.safeMode;
 	}
 	
+	public HashMap<String,String[]> getWithParam(){
+		return this.withParam;
+	}
+	
+	public void setWithParam(HashMap<String, String[]> parameters) {
+		this.withParam = parameters;
+	}
+	
 	public void execute() throws CommandLineXmlProcessorException, IOException, InterruptedException {
 		super.execute(this);
 	}
@@ -174,6 +191,22 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 		// The pipeline
 		if (this.pipeline != null) {
 			options.add(this.getPipeline().toString());
+		}
+		
+		// Parameters to be passed through to the pipeline.
+		if (this.withParam != null) {
+
+			String parameters = "";			
+			for (String port : this.withParam.keySet()) {				
+				String[] portParameters = this.withParam.get(port);
+				for (String parameter : portParameters) {
+					parameters = parameters + port + "@" + parameter + " ";
+				}
+			}
+			if (parameters.trim() != "") {
+				options.add(parameters.trim());
+			}
+			
 		}
 		
 		// Stick all the options together.

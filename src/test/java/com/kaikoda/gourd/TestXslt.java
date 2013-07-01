@@ -2,7 +2,6 @@ package com.kaikoda.gourd;
 
 import java.io.File;
 import java.net.URI;
-import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.custommonkey.xmlunit.XMLAssert;
@@ -19,23 +18,16 @@ import org.junit.Test;
  */
 public class TestXslt {
 
-	private static String defaultPathToXmlProcessor;
 	private static CommandLineXmlProcessorCalabash processor;
 
 	@BeforeClass
 	public static void setupOnce() {
-
 		TestXslt.processor = new CommandLineXmlProcessorCalabash();
-
-		Properties properties = CommandLineXmlProcessor.getProperties();
-		TestXslt.defaultPathToXmlProcessor = properties.getProperty("xmlprocessor.path");
-
 	}
 	
 	@Before
 	public void setup() {
 		TestXslt.processor.reset();
-		TestXslt.processor.setPathToXmlProcessor(TestXslt.defaultPathToXmlProcessor);
 	}
 
 	/**
