@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rainbow>
+    <colours>
+        <colour id="COL1">Red</colour>
+        <colour id="COL2">Orange</colour>
+        <colour id="COL3">Yellow</colour>
+        <colour id="COL4">Green</colour>
+        <colour id="COL5">Blue</colour>
+        <colour id="COL6">Indigo</colour>
+        <colour id="COL7">Violet</colour>
+    </colours>    
+</rainbow>
