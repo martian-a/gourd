@@ -19,7 +19,7 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 	private URI input;
 	private String inputPort;
 	private URI pipeline;
-	private TreeMap<String, String[]> withParam;
+	private TreeMap<String, TreeMap<String, String>> withParam;
 	private TreeMap<String, String> options;
 	
 	/*
@@ -157,11 +157,11 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 		return this.safeMode;
 	}
 	
-	public TreeMap<String,String[]> getWithParam(){
+	public TreeMap<String,TreeMap<String, String>> getWithParam(){
 		return this.withParam;
 	}
 	
-	public void setWithParam(TreeMap<String, String[]> parameters) {
+	public void setWithParam(TreeMap<String, TreeMap<String, String>> parameters) {
 		this.withParam = parameters;
 	}
 	
@@ -202,10 +202,11 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 		if (this.withParam != null) {
 
 			String parameters = "";			
-			for (String port : this.withParam.keySet()) {				
-				String[] portParameters = this.withParam.get(port);
-				for (String parameter : portParameters) {
-					parameters = parameters + port + "@" + parameter + " ";
+			for (String portName : this.withParam.keySet()) {		
+				
+				TreeMap<String, String> portParameters = this.withParam.get(portName);			
+				for (String parameterName : portParameters.keySet()) {
+					parameters = parameters + "--with-param " + portName + "@" + parameterName + "=" + portParameters.get(parameterName) + " ";
 				}
 			}
 			if (parameters.trim() != "") {
