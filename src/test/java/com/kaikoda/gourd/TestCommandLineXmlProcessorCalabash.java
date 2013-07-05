@@ -34,7 +34,7 @@ public class TestCommandLineXmlProcessorCalabash {
 	private static File defaultInput = null;
 	private static String defaultInputPort = CommandLineXmlProcessorCalabash.DEFAULT_INPUT_PORT;
 	private static File defaultPipeline = null;
-	private static TreeMap<String, String[]> defaultWithParam = null;
+	private static TreeMap<String, TreeMap<String, String>> defaultWithParam = null;
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -430,21 +430,30 @@ public class TestCommandLineXmlProcessorCalabash {
 		
 		String pathToPipeline = "/xproc/identity/copy_verbatim.xpl";
 		
-		TreeMap<String, String[]> params = new TreeMap<String, String[]>();
+		TreeMap<String, TreeMap<String, String>> params = new TreeMap<String, TreeMap<String, String>>();
+		TreeMap<String, String> port1Params = new TreeMap<String, String>();
+		TreeMap<String, String> port2Params = new TreeMap<String, String>();
+		
 		String port1 = "secondary"; 		
-		String port1param1 = "root-publication-directory=/test/ing/again";
+		String port1Param1Name = "root-publication-directory";
+		String port1Param1Value = "/test/ing/again";
+		port1Params.put(port1Param1Name, port1Param1Value);
+		
 		String port2 = "source"; 
-		String port2param1 = "root-publication-directory=/test/ing";
-		String port2param2 = "uri=http://localhost:8080/exist/apps/sapling-test/queries/person.xq?id=PER78";
+		String port2Param1Name = "root-publication-directory";
+		String port2Param1Value = "/test/ing";
+		String port2Param2Name = "uri";
+		String port2Param2Value = "http://localhost:8080/exist/apps/sapling-test/queries/person.xq?id=PER78";
+		port2Params.put(port2Param1Name, port2Param1Value);
+		port2Params.put(port2Param2Name, port2Param2Value);
 		
-		
-		params.put(port1, new String[]{port1param1});
-		params.put(port2, new String[]{port2param1, port2param2});
+		params.put(port1, port1Params);
+		params.put(port2, port2Params);
 				
 		processor.setPipeline(new URI(pathToPipeline));											
 		processor.setWithParam(params);
 		
-		String expected = defaultPathToXmlProcessor + " --saxon-processor=he --schema-aware=false --debug=false --safe-mode=false " + port1 + "@" + port1param1 + " " + port2 + "@" + port2param1 + " " + port2 + "@" + port2param2 + " " + pathToPipeline;				
+		String expected = defaultPathToXmlProcessor + " --saxon-processor=he --schema-aware=false --debug=false --safe-mode=false --with-param " +  port1 + "@" + port1Param1Name + "=" + port1Param1Value + " --with-param " + port2 + "@" + port2Param1Name + "=" + port2Param1Value + " --with-param " + port2 + "@" + port2Param2Name + "=" + port2Param2Value + " " + pathToPipeline;				
 		
 		Assert.assertEquals(expected, processor.toString());
 		
@@ -453,9 +462,12 @@ public class TestCommandLineXmlProcessorCalabash {
 	@Test
 	public void testCommandLineXmlProcessorCalabash_setWithParam() {
 		
-		TreeMap<String, String[]> expected = new TreeMap<String, String[]>();
+		TreeMap<String, TreeMap<String, String>> expected = new TreeMap<String, TreeMap<String, String>>();
+		TreeMap<String, String> port1Params = new TreeMap<String, String>();
+		port1Params.put("uri", "http://localhost:8080/exist/apps/sapling-test/queries/person.xq?id=PER78");
+		port1Params.put("root-publication-directory", "/test/ing");
 		
-		expected.put("source", new String[]{"uri=http://localhost:8080/exist/apps/sapling-test/queries/person.xq?id=PER78", "root-publication-directory=/test/ing"});
+		expected.put("source", port1Params);
 		
 		processor.setWithParam(expected);
 		
