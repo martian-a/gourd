@@ -40,15 +40,15 @@ public class TestForEach {
 
 		File inputFile = TestCommandLineXmlProcessor.getFile("/data/source/collection.xml");
 
-		TestForEach.processor.setPipeline(new URI(TestCommandLineXmlProcessor.getFile("/xproc/for-each/collection_creators.xpl", false).toURI().toString()));
+		TestForEach.processor.setPipeline(new URI(TestCommandLineXmlProcessor.getFile("/xproc/valid/for-each/collection_creators.xpl", false).toURI().toString()));
 		TestForEach.processor.setInput(new URI(inputFile.toURI().toString()));
 
-		String expected = FileUtils.readFileToString(TestCommandLineXmlProcessor.getFile("/data/control/collection_creators.xml", true), "UTF-8");
+		String expected = FileUtils.readFileToString(TestCommandLineXmlProcessor.getFile("/data/control/creators.xml", true), "UTF-8");
 	
 		processor.execute();
 		
 		XMLUnit.setIgnoreWhitespace(true);
-
+		
 		XMLAssert.assertXMLEqual(expected, TestForEach.processor.getResponse());
 
 	}

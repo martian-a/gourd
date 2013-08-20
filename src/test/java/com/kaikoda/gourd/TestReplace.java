@@ -40,7 +40,7 @@ public class TestReplace {
 
 		File inputFile = TestCommandLineXmlProcessor.getFile("/data/source/rainbow.xml");
 
-		TestReplace.processor.setPipeline(new URI(TestCommandLineXmlProcessor.getFile("/xproc/replace/rainbow.xpl", false).toURI().toString()));
+		TestReplace.processor.setPipeline(new URI(TestCommandLineXmlProcessor.getFile("/xproc/valid/replace/rainbow.xpl", false).toURI().toString()));
 		TestReplace.processor.setInput(new URI(inputFile.toURI().toString()));
 
 		String expected = FileUtils.readFileToString(TestCommandLineXmlProcessor.getFile("/data/control/rainbow_mnemonic.xml", true), "UTF-8");

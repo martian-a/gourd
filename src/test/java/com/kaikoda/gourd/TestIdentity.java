@@ -39,7 +39,7 @@ public class TestIdentity {
 		
 		File inputFile = TestCommandLineXmlProcessor.getFile("/data/source/hello_world.xml", true);
 		
-		processor.setPipeline(new URI(TestCommandLineXmlProcessor.getFile("/xproc/identity/copy_verbatim.xpl", false).toURI().toString()));
+		processor.setPipeline(new URI(TestCommandLineXmlProcessor.getFile("/xproc/valid/identity/copy_verbatim.xpl", false).toURI().toString()));
 		processor.setInput(new URI(inputFile.toURI().toString()));
 
 		String expected = FileUtils.readFileToString(inputFile, "UTF-8");			

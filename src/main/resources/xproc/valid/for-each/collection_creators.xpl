@@ -3,9 +3,7 @@
     
     <p:input port="source" sequence="false" primary="true" />
     
-    <p:output port="result" sequence="false" primary="true">
-        <p:pipe step="wrap-creators" port="result" />
-    </p:output>
+    <p:output port="result" sequence="true" primary="true" />    
     
     <p:for-each name="get-creators">       
         
@@ -17,13 +15,6 @@
         
     </p:for-each>
     
-
-    <p:wrap-sequence name="wrap-creators" wrapper="collection">
-        
-        <p:input port="source">
-            <p:pipe step="get-creators" port="result" />
-        </p:input>
-        
-    </p:wrap-sequence> 
+    <p:wrap-sequence name="wrap-creators" wrapper="creators" />            
         
 </p:declare-step>
