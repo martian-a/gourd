@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>kaikoda</groupId>
   <artifactId>gourd</artifactId>
-  <version>0.2.0</version>
+  <version>release_v.0.3.0</version>
   <packaging>jar</packaging>
 
   <name>Gourd</name>
