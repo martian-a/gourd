@@ -1,20 +1,27 @@
-<project 
-  xmlns="http://maven.apache.org/POM/4.0.0" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>gourd</groupId>
+  <groupId>kaikoda</groupId>
   <artifactId>gourd</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.1.2-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>Gourd</name>
+  <url>https://github.com/martian-a/gourd</url>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-  <build> 
+
+  <build>
     <sourceDirectory>src/main/java</sourceDirectory>
     <testSourceDirectory>src/test/java</testSourceDirectory>
+    <outputDirectory>target/classes</outputDirectory>
+    <testOutputDirectory>target/test-classes</testOutputDirectory>
     <resources>
       <resource>
-        <directory>src/main/resources</directory>   
+        <directory>src/main/resources</directory>
         <excludes>
           <exclude>*/*.git*</exclude>
           <exclude>settings/custom.properties</exclude>
@@ -30,14 +37,14 @@
     </resources>
     <testResources>
       <testResource>
-        <directory>src/test/resources</directory>  
+        <directory>src/test/resources</directory>
         <excludes>
           <exclude>src/test/settings</exclude>
-        </excludes>     
+        </excludes>
         <includes>
           <include>**/*.xpl</include>
           <include>**/*.xml</include>
-        </includes>        
+        </includes>
       </testResource>
       <testResource>
         <directory>src/test/resources/settings</directory>
@@ -46,52 +53,74 @@
         </includes>
         <targetPath>${project.build.directory}</targetPath>
       </testResource>
-    </testResources>    
+    </testResources>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.0</version>
+        <version>3.1</version>
         <configuration>
           <source>1.7</source>
           <target>1.7</target>
         </configuration>
       </plugin>
       <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.4</version>
-        <configuration>
-          <finalName>gourd</finalName>
-          <descriptors>
-            <descriptor>${basedir}/assembly.xml</descriptor>
-          </descriptors>
-        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9.1</version>
         <executions>
           <execution>
-            <id>make-assembly</id>
-            <phase>package</phase>
+            <id>attach-javadocs</id>
             <goals>
-              <goal>single</goal>
+              <goal>jar</goal>
             </goals>
           </execution>
         </executions>
       </plugin>
-    </plugins>    
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+      </plugin>
+    </plugins>
   </build>
   <dependencies>
-  	<dependency>
-  		<groupId>commons-io</groupId>
-  		<artifactId>commons-io</artifactId>
-  		<version>2.4</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>xmlunit</groupId>
-  		<artifactId>xmlunit</artifactId>
-  		<version>1.4</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>junit</groupId>
-  		<artifactId>junit</artifactId>
-  		<version>4.11</version>
-  	</dependency>
-  </dependencies>  
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.4</version>
+    </dependency>
+    <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <version>1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+    </dependency>
+  </dependencies>
+
+  <organization>
+    <name>Kaikoda Ltd</name>
+    <url>http://kaikoda.com</url>
+  </organization>
+
+  <scm>
+    <connection>scm:git:git://github.com/martian-a/gourd.git</connection>
+    <url>scm:git:git://github.com/martian-a/gourd.git</url>
+    <developerConnection>scm:git:git://github.com/martian-a/gourd.git</developerConnection>
+  </scm>
 </project>
