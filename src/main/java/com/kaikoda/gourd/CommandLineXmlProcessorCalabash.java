@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.TreeMap;
 
 public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
@@ -16,8 +18,7 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 	private boolean schemaAware;
 	private boolean debug;
 	private boolean safeMode;
-	private URI input;
-	private String inputPort;
+	private HashMap<String, URI> inputs;
 	private URI pipeline;
 	private TreeMap<String, TreeMap<String, String>> withParam;
 	private TreeMap<String, String> options;
@@ -49,8 +50,7 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 		this.setSchemaAware(false);
 		this.setDebug(false);
 		this.setSafeMode(false);
-		this.setInput(null);
-		this.setInputPort(CommandLineXmlProcessorCalabash.DEFAULT_INPUT_PORT);
+		this.setInputs(new HashMap<String, URI>());
 		this.setPipeline(null);
 		this.setWithParam(null);
 		this.setOptions(null);
@@ -78,27 +78,30 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 		this.pipeline = location;
 	}
 	
-	public URI getInput() {
-		return this.input;
+	public URI getInput(String port) {
+		return this.inputs.get(port);
 	}
 	
-	public String getInputPort() {
-		return this.inputPort;
+	public HashMap<String, URI> getInputs() {
+		return this.inputs;
 	}
 	
-	public void setInput(URI location) {
-		this.input = location;
+	public void setInput(URI location) {				
+		this.inputs.put(DEFAULT_INPUT_PORT, location);
 	}
 	
-	public void setInputPort(String portName) {
+	public void setInput(String port, URI location) {
 		
 		// If the value is effectively empty, override it with the default port name.
-		if (portName == null || portName.trim().equals("")) {
-			portName = CommandLineXmlProcessorCalabash.DEFAULT_INPUT_PORT;
+		if (port == null || port.trim().equals("")) {
+			port = CommandLineXmlProcessorCalabash.DEFAULT_INPUT_PORT;
 		}
 		
-		this.inputPort = portName;
-			
+		this.inputs.put(port, location);
+	}
+	
+	public void setInputs(HashMap<String, URI> inputList) {		
+		this.inputs = inputList;
 	}
 	
 	public void setSafeMode(boolean option) {
@@ -194,8 +197,13 @@ public class CommandLineXmlProcessorCalabash extends CommandLineXmlProcessor {
 		options.add("--safe-mode=" + String.valueOf(this.safeMode));
 		
 		// The input 
-		if (this.input != null) {
-			options.add("--input " + this.inputPort + "=" + this.getInput().toString());
+		if (this.inputs != null) {
+			
+			String inputList = "";
+			for (String port : this.inputs.keySet()) {
+				options.add("--input " + port + "=" + this.inputs.get(port).toString());	
+			}
+					
 		}
 		
 		// Parameters (NOT options...)
