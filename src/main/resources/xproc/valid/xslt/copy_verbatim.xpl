@@ -10,7 +10,7 @@
     <p:xslt name="transform">
         
         <p:input port="stylesheet">
-            <p:document href="../../xslt/copy_verbatim.xsl"/>
+            <p:document href="../../../xslt/copy_verbatim.xsl"/>
         </p:input>       
         
         <p:input port="parameters">

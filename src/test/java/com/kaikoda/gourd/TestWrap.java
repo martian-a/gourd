@@ -37,7 +37,7 @@ public class TestWrap {
 	@Test
 	public void testWrap_helloWorld() throws Exception {	
 		
-		processor.setPipeline(new URI(TestCommandLineXmlProcessor.getFile("/xproc/wrap/hello_world.xpl", false).toURI().toString()));
+		processor.setPipeline(new URI(TestCommandLineXmlProcessor.getFile("/xproc/valid/wrap/hello_world.xpl", false).toURI().toString()));
 		
 		String expected = FileUtils.readFileToString(new File(TestCommandLineXmlProcessor.getFile("/data/source/hello_world.xml", true).getAbsolutePath()), "UTF-8");			
 				

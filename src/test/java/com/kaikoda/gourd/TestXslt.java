@@ -40,7 +40,7 @@ public class TestXslt {
 
 		File inputFile = TestCommandLineXmlProcessor.getFile("/data/source/hello_world.xml");
 
-		TestXslt.processor.setPipeline(new URI(TestCommandLineXmlProcessor.getFile("/xproc/xslt/copy_verbatim.xpl", false).toURI().toString()));
+		TestXslt.processor.setPipeline(new URI(TestCommandLineXmlProcessor.getFile("/xproc/valid/xslt/copy_verbatim.xpl", false).toURI().toString()));
 		TestXslt.processor.setInput(new URI(inputFile.toURI().toString()));
 
 		String expected = FileUtils.readFileToString(inputFile, "UTF-8");
