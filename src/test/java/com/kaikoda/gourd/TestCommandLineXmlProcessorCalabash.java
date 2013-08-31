@@ -20,21 +20,22 @@ import com.kaikoda.gourd.CommandLineXmlProcessorCalabash.SaxonProcessor;
 
 public class TestCommandLineXmlProcessorCalabash {
 
-	private static String defaultErrorMessage = null;
-	private static int defaultExitValue = 0;
-	private static Boolean defaultIsReady = true;
-	private static String defaultPathToXmlProcessor;
-	private static String defaultResponse = null;
-	private static CommandLineXmlProcessorCalabash processor;
-	private static SaxonProcessor defaultSaxonProcessor = SaxonProcessor.he;
-	private static File defaultSaxonConfiguration = null;
-	private static boolean defaultSchemaAware = false;
-	private static boolean defaultDebug = false;
-	private static boolean defaultSafeMode = false;
-	private static File defaultInput = null;
-	private static String defaultInputPort = CommandLineXmlProcessorCalabash.DEFAULT_INPUT_PORT;
-	private static File defaultPipeline = null;
-	private static TreeMap<String, TreeMap<String, String>> defaultWithParam = null;
+	static private final String DEFAULT_ERROR_MESSAGE = null;
+	static private final int DEFAULT_EXIT_VALUE = 0;
+	static private final Boolean DEFAULT_IS_READY = true;
+	static private final String DEFAULT_RESPONSE = null;
+	static private final SaxonProcessor DEFAULT_SAXON_PROCESSOR = SaxonProcessor.he;
+	static private final File DEFAULT_SAXON_CONFIGURATION = null;
+	static private final boolean DEFAULT_SCHEMA_AWARE = false;
+	static private final boolean DEFAULT_DEBUG = false;
+	static private final boolean DEFAULT_SAFE_MODE = false;
+	static private final File DEFAULT_INPUT = null;
+	static private final String DEFAULT_INPUT_PORT = CommandLineXmlProcessorCalabash.DEFAULT_INPUT_PORT;
+	static private final File DEFAULT_PIPELINE = null;
+	static private final TreeMap<String, TreeMap<String, String>> DEFAULT_WITH_PARAM = null;
+	
+	static private String defaultPathToXmlProcessor;
+	static private CommandLineXmlProcessorCalabash processor;
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -61,20 +62,20 @@ public class TestCommandLineXmlProcessorCalabash {
 		 * Check that the initial values are the default values.
 		 */
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultPathToXmlProcessor, TestCommandLineXmlProcessorCalabash.processor.getPathToXmlProcessor());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultIsReady, TestCommandLineXmlProcessorCalabash.processor.isReady());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultErrorMessage, TestCommandLineXmlProcessorCalabash.processor.getErrorMessage());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultResponse, TestCommandLineXmlProcessorCalabash.processor.getResponse());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultExitValue, TestCommandLineXmlProcessorCalabash.processor.getExitValue());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_IS_READY, TestCommandLineXmlProcessorCalabash.processor.isReady());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_ERROR_MESSAGE, TestCommandLineXmlProcessorCalabash.processor.getErrorMessage());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_RESPONSE, TestCommandLineXmlProcessorCalabash.processor.getResponse());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_EXIT_VALUE, TestCommandLineXmlProcessorCalabash.processor.getExitValue());
 		
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSaxonProcessor, TestCommandLineXmlProcessorCalabash.processor.getSaxonProcessor());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSaxonConfiguration, TestCommandLineXmlProcessorCalabash.processor.getSaxonConfiguration());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSchemaAware, TestCommandLineXmlProcessorCalabash.processor.getSchemaAware());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultDebug, TestCommandLineXmlProcessorCalabash.processor.getDebug());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSafeMode, TestCommandLineXmlProcessorCalabash.processor.getSafeMode());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultInput, TestCommandLineXmlProcessorCalabash.processor.getInput());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultInputPort, TestCommandLineXmlProcessorCalabash.processor.getInputPort());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultPipeline, TestCommandLineXmlProcessorCalabash.processor.getPipeline());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultWithParam, TestCommandLineXmlProcessorCalabash.processor.getWithParam());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_SAXON_PROCESSOR, TestCommandLineXmlProcessorCalabash.processor.getSaxonProcessor());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_SAXON_CONFIGURATION, TestCommandLineXmlProcessorCalabash.processor.getSaxonConfiguration());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_SCHEMA_AWARE, TestCommandLineXmlProcessorCalabash.processor.getSchemaAware());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_DEBUG, TestCommandLineXmlProcessorCalabash.processor.getDebug());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_SAFE_MODE, TestCommandLineXmlProcessorCalabash.processor.getSafeMode());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_INPUT, TestCommandLineXmlProcessorCalabash.processor.getInput());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_INPUT_PORT, TestCommandLineXmlProcessorCalabash.processor.getInputPort());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_PIPELINE, TestCommandLineXmlProcessorCalabash.processor.getPipeline());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_WITH_PARAM, TestCommandLineXmlProcessorCalabash.processor.getWithParam());
 
 	}
 
@@ -151,19 +152,19 @@ public class TestCommandLineXmlProcessorCalabash {
 		 * Check that the new values are once again the default values.
 		 */
 		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultPathToXmlProcessor, TestCommandLineXmlProcessorCalabash.processor.getPathToXmlProcessor());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultIsReady, TestCommandLineXmlProcessorCalabash.processor.isReady());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultErrorMessage, TestCommandLineXmlProcessorCalabash.processor.getErrorMessage());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultResponse, TestCommandLineXmlProcessorCalabash.processor.getResponse());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultExitValue, TestCommandLineXmlProcessorCalabash.processor.getExitValue());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSaxonProcessor, TestCommandLineXmlProcessorCalabash.processor.getSaxonProcessor());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSaxonConfiguration, TestCommandLineXmlProcessorCalabash.processor.getSaxonConfiguration());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSchemaAware, TestCommandLineXmlProcessorCalabash.processor.getSchemaAware());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultDebug, TestCommandLineXmlProcessorCalabash.processor.getDebug());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultSafeMode, TestCommandLineXmlProcessorCalabash.processor.getSafeMode());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultInput, TestCommandLineXmlProcessorCalabash.processor.getInput());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultInputPort, TestCommandLineXmlProcessorCalabash.processor.getInputPort());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultPipeline, TestCommandLineXmlProcessorCalabash.processor.getPipeline());
-		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.defaultWithParam, TestCommandLineXmlProcessorCalabash.processor.getWithParam());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_IS_READY, TestCommandLineXmlProcessorCalabash.processor.isReady());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_ERROR_MESSAGE, TestCommandLineXmlProcessorCalabash.processor.getErrorMessage());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_RESPONSE, TestCommandLineXmlProcessorCalabash.processor.getResponse());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_EXIT_VALUE, TestCommandLineXmlProcessorCalabash.processor.getExitValue());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_SAXON_PROCESSOR, TestCommandLineXmlProcessorCalabash.processor.getSaxonProcessor());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_SAXON_CONFIGURATION, TestCommandLineXmlProcessorCalabash.processor.getSaxonConfiguration());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_SCHEMA_AWARE, TestCommandLineXmlProcessorCalabash.processor.getSchemaAware());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_DEBUG, TestCommandLineXmlProcessorCalabash.processor.getDebug());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_SAFE_MODE, TestCommandLineXmlProcessorCalabash.processor.getSafeMode());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_INPUT, TestCommandLineXmlProcessorCalabash.processor.getInput());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_INPUT_PORT, TestCommandLineXmlProcessorCalabash.processor.getInputPort());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_PIPELINE, TestCommandLineXmlProcessorCalabash.processor.getPipeline());
+		Assert.assertEquals(TestCommandLineXmlProcessorCalabash.DEFAULT_WITH_PARAM, TestCommandLineXmlProcessorCalabash.processor.getWithParam());
 
 	}
 
